@@ -15,11 +15,8 @@ const foodtruckurl= "https://www.reddit.com/r/UIUC/comments/u6tvw8/list_of_food_
 const foodtruckflick= "../assets/Food_trucks_Pitt_09.jpg";
 const foodtruckfacebook= "https://www.facebook.com/Cristiano/"
 
-const openFacebookPage = () => {
-  const url = foodtruckfacebook
-  Linking.openURL(url).catch(err => console.error("An error occurred", err));
-};
-export default function App() {
+
+const Description = ({ navigation }) => {
   const [loaded] = useFonts({
     Lato: require('../assets/fonts/Lato-Regular.ttf'),
     
@@ -290,3 +287,8 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
 });
+const openFacebookPage = () => {
+    const url = foodtruckfacebook
+    Linking.openURL(url).catch(err => console.error("An error occurred", err));
+  };
+export default Description;
