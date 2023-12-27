@@ -19,13 +19,13 @@ function App() {
             open: {
               animation: 'timing',
               config: {
-                duration: 400 // Duration for opening
+                duration: 200 // Duration for opening
               }
             },
             close: {
               animation: 'timing',
               config: {
-                duration: 400 // Duration for closing
+                duration: 200 // Duration for closing
               }
             }
           }
