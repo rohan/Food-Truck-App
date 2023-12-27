@@ -3,26 +3,43 @@ import ListScreen from './Components/ListScreen';
 import MapScreen from './Components/MapScreen';
 import Description from './Components/Description';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
 
 function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="MapScreen">
+      <Stack.Navigator
+        initialRouteName="MapScreen"
+        screenOptions={{
+          headerShown: false,       // Hide the header globally
+          cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid, // Fade in effect
+          transitionSpec: {
+            open: {
+              animation: 'timing',
+              config: {
+                duration: 200 // Duration for opening
+              }
+            },
+            close: {
+              animation: 'timing',
+              config: {
+                duration: 200 // Duration for closing
+              }
+            }
+          }
+        }}
+      >
         <Stack.Screen 
           name="Description"
           component={Description}
-          options={{headerShown: false}} 
         />
         <Stack.Screen
-          options={{ headerShown: false }}
           name="MapScreen"
           component={MapScreen}
         />
         <Stack.Screen
-          options={{ headerShown: false }}
           name="ListScreen"
           component={ListScreen}
         />

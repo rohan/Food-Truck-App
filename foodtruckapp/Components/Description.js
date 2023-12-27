@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { ScrollView, StyleSheet,ImageBackground, Text, View, SafeAreaView , titles, Image, TouchableOpacity, Button, Linking} from 'react-native';
+import {Dimensions, ScrollView, StyleSheet,ImageBackground, Text, View, SafeAreaView , titles, Image, TouchableOpacity, Button, Linking} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/AntDesign'; 
@@ -14,7 +14,8 @@ const foodtype= "Mexican";
 const foodtruckurl= "https://www.reddit.com/r/UIUC/comments/u6tvw8/list_of_food_trucks_on_campus/";
 const foodtruckflick= "../assets/Food_trucks_Pitt_09.jpg";
 const foodtruckfacebook= "https://www.facebook.com/Cristiano/"
-
+const windowWidth = Dimensions.get('window').width;
+const isTablet = windowWidth > 768; 
 
 const Description = ({ navigation }) => {
   const [loaded] = useFonts({
@@ -28,9 +29,12 @@ const Description = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity style={styles.backButton}>
-        <Icon name="arrowleft" size={20} color="#FFFFFF" />
-        </TouchableOpacity>
+      <TouchableOpacity 
+  style={styles.backButton}
+  onPress={() => navigation.goBack()}
+>
+  <Icon name="arrowleft" size={20} color="#FFFFFF" />
+</TouchableOpacity>
         <Text style={styles.headername}>Wheel’s & Meals UIUC</Text>
       </View>
       <View style={styles.images}>
@@ -170,14 +174,14 @@ const styles = StyleSheet.create({
 
   },
   backButton: {
-    width: 30, // Diameter of the circle
-    height: 30, // Diameter of the circle
+    width: 30,
+    height: 30,
     borderRadius: 20,
-    justifyContent: 'center', // Center the icon horizontally
-    alignItems: 'center',  // Half the diameter to make it a perfect circle
+    justifyContent: 'center',
+    alignItems: 'center',
     backgroundColor: "#FF5F05",
-    right: 160,
-    top:30,
+    right: isTablet ? 540 : 160, // Adjust positioning for tablets
+    top: 30,
   },
   imageBackground: {
     width: '100%', // Ensure the width covers the parent
@@ -278,8 +282,8 @@ const styles = StyleSheet.create({
   facebookButton: {
     position: 'absolute',
     right: 19,
-    bottom: 55,
-    backgroundColor: '#3b5998', // Facebook blue color
+    bottom: isTablet ? '35%' : '22%', // Adjust positioning for tablets
+    backgroundColor: '#3b5998',
     width: 50,
     height: 50,
     borderRadius: 25,

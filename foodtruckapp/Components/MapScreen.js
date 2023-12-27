@@ -1,8 +1,10 @@
 import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
 import * as React from 'react';
-import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
+import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import ViewSwitch from './ViewSwitch';
 import Geocoder from 'react-native-geocoding';
+import Nav from './Nav';
+import Header from './Header';
 
 export default function MapScreen({ navigation }) {  
 
@@ -207,6 +209,7 @@ export default function MapScreen({ navigation }) {
     }
     return (
     <View style={styles.container}>
+       <Header />
         <MapView 
             style={styles.map}
             customMapStyle={mapStyle}
@@ -224,8 +227,14 @@ export default function MapScreen({ navigation }) {
                 }
             }}
         >
+           <Marker
+                    coordinate={{ latitude: 40.110558, longitude: -88.228333 }}
+                    title={"Patel Brothers"} // Optional
+                    onPress={() => navigation.navigate("Description")}
+                />
         </MapView>
-        <ViewSwitch onMapScreen={true} onPressViewSwitch={() => {navigation.navigate("ListScreen")}} />
+        <Header currentScreen="MapScreen" />
+        <Nav navigation={navigation} currentScreen="MapScreen" />
     </View>
     );
 }
@@ -238,6 +247,7 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-end'
   },
   map: {
+    flex: 1,
     width: '100%',
     height: '100%',
     position: 'absolute',
@@ -249,4 +259,16 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: 'white',
   },
+  descriptionButton: {
+    position: 'absolute',
+    bottom: 50,
+    alignSelf: 'center',
+    backgroundColor: 'blue',
+    padding: 10,
+    borderRadius: 5,
+},
+descriptionButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+}
 });
