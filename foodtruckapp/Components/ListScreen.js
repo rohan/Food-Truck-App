@@ -1,13 +1,24 @@
-import React from 'react';
-import { Text, SafeAreaView, StyleSheet, FlatList, View, TouchableOpacity, Image } from 'react-native';
+import * as React from 'react';
+import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import ViewSwitch from './ViewSwitch';
 import Nav from './Nav';
 import Header from './Header';
-import {useFonts} from 'expo-font'
-
+import {useFonts} from 'expo-font';
+import fetchTrucks from './Fetch';
 
 export default function ListScreen({ navigation }) {
+
+  const [truckData, setTruckData] = React.useState([]);
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      setTruckData(fetchTrucks());
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   const [loaded] = useFonts({
     Lato: require('../assets/fonts/Lato-Regular.ttf'),

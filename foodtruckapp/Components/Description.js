@@ -1,5 +1,4 @@
-import { StatusBar } from 'expo-status-bar';
-import {Dimensions, ScrollView, StyleSheet,ImageBackground, Text, View, SafeAreaView , titles, Image, TouchableOpacity, Button, Linking} from 'react-native';
+import {Dimensions, StyleSheet,ImageBackground, Text, View, SafeAreaView , titles, Image, TouchableOpacity, Button, Linking} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/AntDesign'; 

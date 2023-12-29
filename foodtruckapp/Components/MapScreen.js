@@ -1,10 +1,10 @@
-import { Text, SafeAreaView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import * as React from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
-import ViewSwitch from './ViewSwitch';
 import Geocoder from 'react-native-geocoding';
 import Nav from './Nav';
 import Header from './Header';
+import fetchTrucks from './Fetch';
 
 export default function MapScreen({ navigation }) {  
 
@@ -172,21 +172,12 @@ export default function MapScreen({ navigation }) {
         },
       ];
 
+    const [truckData, setTruckData] = React.useState([]);
     React.useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
         // The screen is focused
         // Call any action
-        Geocoder.init(GEOCODER_API_KEY);
-        Geocoder.from("Cocomero", {
-          //40.093346171727056, -88.25784343096215
-          //40.12704879226831, -88.21812886505093
-          southwest: {lat: 40.093346171727056, lng: -88.25784343096215},
-          northeast: {lat: 40.12704879226831, lng: -88.21812886505093}})
-          .then(json => {
-            var location = json.results[0].geometry.location;
-            console.log(location);
-          })
-          .catch(error => console.warn(error));
+        setTruckData(fetchTrucks());
       });
   
       // Return the function to unsubscribe from the event so it gets removed on unmount
@@ -243,13 +234,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: '#000',
-    justifyContent: 'flex-end'
+    backgroundColor: '#13294B',
+    justifyContent: 'flex-end',
+    alignItems: "stretch"
   },
   map: {
-    flex: 1,
     width: '100%',
-    height: '100%',
+    height: '90%',
     position: 'absolute',
   },
   paragraph: {
