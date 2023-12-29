@@ -1,13 +1,45 @@
-import React from 'react';
-import { Text, SafeAreaView, StyleSheet, FlatList, View, TouchableOpacity, Image } from 'react-native';
+import * as React from 'react';
+import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import ViewSwitch from './ViewSwitch';
 import Nav from './Nav';
 import Header from './Header';
-import {useFonts} from 'expo-font'
-
+import {useFonts} from 'expo-font';
+import { db } from './Config';
+import { ref, get, child } from 'firebase/database';
 
 export default function ListScreen({ navigation }) {
+
+  const [truckData, setTruckData] = React.useState([]);
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      // The screen is focused
+      // Call any action
+      setTimeout(() => {
+        const dbRef = ref(db);
+        get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
+            if (snapshot.exists()) {
+                const data = snapshot.val();
+                const trucks = Object.keys(data).map(key => ({
+                    ...data[key]
+                }))
+                const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+                setTruckData(sortedTruckData);
+            } else {
+                console.log("No data available");
+                return null;
+            }
+        }).catch((error) => {
+            console.error(error);
+        });
+        setLoading(true);
+      }, 1000);     
+    });
+
+    // Return the function to unsubscribe from the event so it gets removed on unmount
+    return unsubscribe;
+  }, [navigation]);
 
   const [loaded] = useFonts({
     Lato: require('../assets/fonts/Lato-Regular.ttf'),
@@ -17,49 +49,19 @@ export default function ListScreen({ navigation }) {
     return null;
   }
 
-  const DATA = [
-    {
-      name: "Tacos Locos",
-      location: "Armory",
-      time: "4pm to 7pm",
-      image: require('../assets/Food_trucks_Pitt_09.jpg'), // Path to your image
-    },
-    {
-      name: "Jurassic Grill",
-      location: "Green",
-      time: "4pm to 7pm",
-      image: require('../assets/JG.png'), 
-    },
-    {
-      name: "McDonalds", 
-      location: "FAR",
-      time: "4pm to 7pm",
-      image: require('../assets/MCD.png'), 
-    },
-    {
-      name: "Canes", 
-      location: "Green",
-      time: "1pm to 3pm",
-      image: require('../assets/Canes.webp'), 
-    },
-    {
-      name: "La Paloma", 
-      location: "Gregory St",
-      time: "2pm to 9pm",
-      image: require('../assets/LaPal.jpeg'),
-    },
-  ]
-  
-  const sortedData = DATA.sort((a, b) => a.name.localeCompare(b.name));
-
+  const truckToImageMap = new Map([
+    ["Sample", require('../assets/Food_trucks_Pitt_09.jpg')],
+    ["MASS Truck", require('../assets/JG.png')],
+    ["a", require('../assets/MCD.png')]
+  ])
 
   const renderItem = ({ item }) => (
     <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Description')}>
-      {item.image && <Image source={item.image} style={styles.image} />}
+      {truckToImageMap.get(item.name) && <Image source={truckToImageMap.get(item.name)} style={styles.image} />}
       <View style={styles.itemContent}>
         <Text style={styles.itemText}>{item.name}</Text>
         <Text style={styles.locationText}>{item.location}</Text>
-        <Text style={styles.timeText}>{item.time}</Text>
+        <Text style={styles.timeText}>{item.hours}</Text>
       </View>
       <Ionicons name="arrow-forward" size={20} color="black" />
     </TouchableOpacity>
@@ -70,7 +72,7 @@ export default function ListScreen({ navigation }) {
       <Header />
       <Text style={styles.todayHeader}>Today</Text>
       <FlatList
-        data={sortedData}
+        data={truckData}
         renderItem={renderItem}
         keyExtractor={(item) => item.name}
       />
