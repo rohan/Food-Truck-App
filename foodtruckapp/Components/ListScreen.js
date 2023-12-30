@@ -28,7 +28,6 @@ export default function ListScreen({ navigation }) {
                 setTruckData(sortedTruckData);
             } else {
                 console.log("No data available");
-                return null;
             }
         }).catch((error) => {
             console.error(error);
@@ -51,30 +50,53 @@ export default function ListScreen({ navigation }) {
 
   const truckToImageMap = new Map([
     ["Sample", require('../assets/Food_trucks_Pitt_09.jpg')],
-    ["MASS Truck", require('../assets/JG.png')],
+    ["JGrill", require('../assets/JG.png')],
     ["a", require('../assets/MCD.png')]
   ])
 
+  function Item({ item }) {
+
+    function getDate() {
+      return item.startTime.split("T")[0];
+    }
+
+    function getTime(date) {
+      const time =  date.split("T")[1];
+      const hours = time.split(":")[0];
+      const minutes = time.split(":")[1];
+      if (hours > 12) {
+        return (hours % 12) + ":" + minutes + "PM";
+       } else {
+        return time + "AM";
+       }
+    }
+
+    return (
+      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Description')}>
+        {truckToImageMap.get(item.name) && <Image source={truckToImageMap.get(item.name)} style={styles.image} />}
+        <View style={styles.itemContent}>
+          <Text style={styles.itemText}>{item.name}</Text>
+          <Text style={styles.locationText}>{item.location}</Text>
+          <Text style={styles.timeText}>{getDate()}</Text>
+          <Text style={styles.timeText}>{getTime(item.startTime)} to {getTime(item.endTime)}</Text>
+        </View>
+        <Ionicons name="arrow-forward" size={20} color="black" />
+      </TouchableOpacity>
+    )
+  }
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Description')}>
-      {truckToImageMap.get(item.name) && <Image source={truckToImageMap.get(item.name)} style={styles.image} />}
-      <View style={styles.itemContent}>
-        <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.locationText}>{item.location}</Text>
-        <Text style={styles.timeText}>{item.hours}</Text>
-      </View>
-      <Ionicons name="arrow-forward" size={20} color="black" />
-    </TouchableOpacity>
+    <Item item={item} />
   );
 
   return (
     <View style={styles.container}>
       <Header />
-      <Text style={styles.todayHeader}>Today</Text>
+      <Text style={styles.todayHeader}>Active Food Trucks</Text>
       <FlatList
         data={truckData}
         renderItem={renderItem}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.key}
       />
       <Nav navigation={navigation} currentScreen="ListScreen" />
     </View>
