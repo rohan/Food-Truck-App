@@ -105,7 +105,35 @@ export default function ListScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Header />
+      <Header handleRefresh={() => {
+              setTimeout(() => {
+                const dbRef = ref(db);
+                get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
+                  if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const trucks = Object.keys(data).map(key => ({
+                        ...data[key]
+                    }))
+                    const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+                    setTruckData([]);
+                    Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
+                    for (let i = 0; i < sortedTruckData.length; i++) {
+                      Geocoder.from(sortedTruckData[i].location)
+                      .then(json => {
+                        var location = json.results[0].geometry.location;
+                        sortedTruckData[i].coords = location;
+                        setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                      })
+                      .catch(error => console.warn(error));
+                    }
+                } else {
+                    console.log("No data available");
+                }
+                }).catch((error) => {
+                    console.error(error);
+                });
+              }, 1000);    
+      }}/>
       <Text style={styles.todayHeader}>Active Food Trucks</Text>
       <View style={styles.searchBar}>
         <MaterialIcons style={styles.searchIcon} name="search" size={30} color="#000" />
