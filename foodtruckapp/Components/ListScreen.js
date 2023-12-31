@@ -6,6 +6,7 @@ import Header from './Header';
 import {useFonts} from 'expo-font';
 import { db } from './Config';
 import { ref, get, child } from 'firebase/database';
+import Geocoder from 'react-native-geocoding';
 
 export default function ListScreen({ navigation }) {
 
@@ -19,17 +20,26 @@ export default function ListScreen({ navigation }) {
       setTimeout(() => {
         const dbRef = ref(db);
         get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
-            if (snapshot.exists()) {
-                const data = snapshot.val();
-                const trucks = Object.keys(data).map(key => ({
-                    ...data[key]
-                }))
-                const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
-                setTruckData(sortedTruckData);
-            } else {
-                console.log("No data available");
-                return null;
+          if (snapshot.exists()) {
+            const data = snapshot.val();
+            const trucks = Object.keys(data).map(key => ({
+                ...data[key]
+            }))
+            const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+            setTruckData([]);
+            Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
+            for (let i = 0; i < sortedTruckData.length; i++) {
+              Geocoder.from(sortedTruckData[i].location)
+              .then(json => {
+                var location = json.results[0].geometry.location;
+                sortedTruckData[i].coords = location;
+                setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+              })
+              .catch(error => console.warn(error));
             }
+        } else {
+            console.log("No data available");
+        }
         }).catch((error) => {
             console.error(error);
         });
@@ -51,30 +61,53 @@ export default function ListScreen({ navigation }) {
 
   const truckToImageMap = new Map([
     ["Sample", require('../assets/Food_trucks_Pitt_09.jpg')],
-    ["MASS Truck", require('../assets/JG.png')],
+    ["JGrill", require('../assets/JG.png')],
     ["a", require('../assets/MCD.png')]
   ])
 
+  function Item({ item }) {
+
+    function getDate() {
+      return item.startTime.split("T")[0];
+    }
+
+    function getTime(date) {
+      const time =  date.split("T")[1];
+      const hours = time.split(":")[0];
+      const minutes = time.split(":")[1];
+      if (hours > 12) {
+        return (hours % 12) + ":" + minutes + "PM";
+       } else {
+        return time + "AM";
+       }
+    }
+
+    return (
+      <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Description', {truck: item})}>
+        {truckToImageMap.get(item.name) && <Image source={truckToImageMap.get(item.name)} style={styles.image} />}
+        <View style={styles.itemContent}>
+          <Text style={styles.itemText}>{item.name}</Text>
+          <Text style={styles.locationText}>{item.location}</Text>
+          <Text style={styles.timeText}>{getDate()}</Text>
+          <Text style={styles.timeText}>{getTime(item.startTime)} to {getTime(item.endTime)}</Text>
+        </View>
+        <Ionicons name="arrow-forward" size={20} color="black" />
+      </TouchableOpacity>
+    )
+  }
+
   const renderItem = ({ item }) => (
-    <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Description')}>
-      {truckToImageMap.get(item.name) && <Image source={truckToImageMap.get(item.name)} style={styles.image} />}
-      <View style={styles.itemContent}>
-        <Text style={styles.itemText}>{item.name}</Text>
-        <Text style={styles.locationText}>{item.location}</Text>
-        <Text style={styles.timeText}>{item.hours}</Text>
-      </View>
-      <Ionicons name="arrow-forward" size={20} color="black" />
-    </TouchableOpacity>
+    <Item item={item} />
   );
 
   return (
     <View style={styles.container}>
       <Header />
-      <Text style={styles.todayHeader}>Today</Text>
+      <Text style={styles.todayHeader}>Active Food Trucks</Text>
       <FlatList
         data={truckData}
         renderItem={renderItem}
-        keyExtractor={(item) => item.name}
+        keyExtractor={(item) => item.key}
       />
       <Nav navigation={navigation} currentScreen="ListScreen" />
     </View>

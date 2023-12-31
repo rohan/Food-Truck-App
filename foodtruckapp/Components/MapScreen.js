@@ -5,6 +5,7 @@ import Nav from './Nav';
 import Header from './Header';
 import { db } from './Config';
 import { ref, get, child } from 'firebase/database';
+import Geocoder from 'react-native-geocoding';
 
 export default function MapScreen({ navigation }) {  
 
@@ -173,7 +174,7 @@ export default function MapScreen({ navigation }) {
       ];
 
     const [truckData, setTruckData] = React.useState([]);
-    const [loading, setLoading] = React.useState(false);
+    const [loading, setLoading] = React.useState(true);
   
     React.useEffect(() => {
       const unsubscribe = navigation.addListener('focus', () => {
@@ -188,21 +189,45 @@ export default function MapScreen({ navigation }) {
                       ...data[key]
                   }))
                   const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
-                  setTruckData(sortedTruckData);
+                  setTruckData([]);
+                  Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
+                  for (let i = 0; i < sortedTruckData.length; i++) {
+                    Geocoder.from(sortedTruckData[i].location)
+                    .then(json => {
+                      var location = json.results[0].geometry.location;
+                      sortedTruckData[i].coords = location;
+                      setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                    })
+                    .catch(error => console.warn(error));
+                  }
               } else {
                   console.log("No data available");
-                  return null;
               }
           }).catch((error) => {
               console.error(error);
           });
-          setLoading(true);
+          
+          setLoading(false);
         }, 1000);     
       });
   
       // Return the function to unsubscribe from the event so it gets removed on unmount
       return unsubscribe;
     }, [navigation]);
+
+    mapMarkers = () => {
+      if (truckData.length > 0) {
+        return truckData.map((truck) =>
+          <Marker
+            coordinate={{ latitude: truck.coords.lat, longitude: truck.coords.lng}}
+            title={truck.name}
+            identifier={truck.key}
+            key={truck.key}
+            onPress={() => navigation.navigate("Description", {truck: truck})}
+          />
+        )
+      }
+    }
 
     const _mapView = React.createRef();
     function _animateToUserPosition(coordinate) {
@@ -218,6 +243,7 @@ export default function MapScreen({ navigation }) {
           );
         }
     }
+
     return (
     <View style={styles.container}>
        <Header />
@@ -232,17 +258,13 @@ export default function MapScreen({ navigation }) {
             scrollEnabled={true}
             ref={_mapView}
             onUserLocationChange={(userPosition) => {
-                if (screenJustFocused) {
-                    _animateToUserPosition(userPosition.nativeEvent.coordinate);
-                    setScreenJustFocused(false);
-                }
+              if (screenJustFocused) {
+                _animateToUserPosition(userPosition.nativeEvent.coordinate);
+                setScreenJustFocused(false);
+              }
             }}
         >
-           <Marker
-                    coordinate={{ latitude: 40.110558, longitude: -88.228333 }}
-                    title={"Patel Brothers"} // Optional
-                    onPress={() => navigation.navigate("Description")}
-                />
+           {mapMarkers()}
         </MapView>
         <Header currentScreen="MapScreen" />
         <Nav navigation={navigation} currentScreen="MapScreen" />
