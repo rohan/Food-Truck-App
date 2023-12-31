@@ -223,7 +223,7 @@ export default function MapScreen({ navigation }) {
             title={truck.name}
             identifier={truck.key}
             key={truck.key}
-            onPress={() => navigation.navigate("Description")}
+            onPress={() => navigation.navigate("Description", {truck: truck})}
           />
         )
       }

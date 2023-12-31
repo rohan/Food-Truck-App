@@ -1,22 +1,34 @@
-import {Dimensions, StyleSheet,ImageBackground, Text, View, SafeAreaView , titles, Image, TouchableOpacity, Button, Linking} from 'react-native';
+import {Dimensions, StyleSheet, ImageBackground, Text, View, TouchableOpacity, Linking} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/AntDesign'; 
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useFonts} from 'expo-font'
-import MapView, { Marker } from 'react-native-maps';
+import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
+import getDirections from 'react-native-google-maps-directions';
 
-
-const time ='9:00 AM to 5:00 PM';
-const foodtruckname= "FOOD TRUCK";
-const foodtype= "Mexican";
-const foodtruckurl= "https://www.reddit.com/r/UIUC/comments/u6tvw8/list_of_food_trucks_on_campus/";
-const foodtruckflick= "../assets/Food_trucks_Pitt_09.jpg";
-const foodtruckfacebook= "https://www.facebook.com/Cristiano/"
 const windowWidth = Dimensions.get('window').width;
 const isTablet = windowWidth > 768; 
 
-const Description = ({ navigation }) => {
+export default function Description({ navigation, route }) {
+  const time = getTime(route.params.truck.startTime) + " to " + getTime(route.params.truck.endTime);
+  const foodtruckname= route.params.truck.name;
+  const foodtype= "[CUISINE TYPE]";
+  const websiteurl= "[WEBSITE URL]";
+  const foodtruckflick= "../assets/Food_trucks_Pitt_09.jpg";
+  const foodtruckfacebook= "https://www.facebook.com/Cristiano/"
+
+  function getTime(date) {
+    const time =  date.split("T")[1];
+    const hours = time.split(":")[0];
+    const minutes = time.split(":")[1];
+    if (hours > 12) {
+      return (hours % 12) + ":" + minutes + "PM";
+     } else {
+      return time + "AM";
+     }
+  }
+
   const [loaded] = useFonts({
     Lato: require('../assets/fonts/Lato-Regular.ttf'),
     
@@ -25,15 +37,206 @@ const Description = ({ navigation }) => {
     return null;
   }
 
+  const openFacebookPage = () => {
+    const url = foodtruckfacebook
+    Linking.openURL(url).catch(err => console.error("An error occurred", err));
+  };
+
+  const openWebsite = () => {
+    Linking.openURL(websiteurl).catch(err => console.error("An error occurred", err))
+  }
+
+  const openDirections = () => {
+    const data = {
+     destination: {
+       latitude: route.params.truck.coords.lat,
+       longitude: route.params.truck.coords.lng
+     },
+     params: [
+       {
+         key: "travelmode",
+         value: "driving"        // may be "walking", "bicycling" or "transit" as well
+       },
+       {
+         key: "dir_action",
+         value: "navigate"       // this instantly initializes navigation using the given travel mode
+       }
+     ],
+    }
+    getDirections(data)
+  }
+
+  const mapStyle = [
+    {
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#242f3e',
+        },
+      ],
+    },
+    {
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#746855',
+        },
+      ],
+    },
+    {
+      elementType: 'labels.text.stroke',
+      stylers: [
+        {
+          color: '#242f3e',
+        },
+      ],
+    },
+    {
+      featureType: 'administrative.locality',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#d59563',
+        },
+      ],
+    },
+    {
+      featureType: 'poi',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#d59563',
+        },
+      ],
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#263c3f',
+        },
+      ],
+    },
+    {
+      featureType: 'poi.park',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#6b9a76',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#38414e',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'geometry.stroke',
+      stylers: [
+        {
+          color: '#212a37',
+        },
+      ],
+    },
+    {
+      featureType: 'road',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#9ca5b3',
+        },
+      ],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#746855',
+        },
+      ],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'geometry.stroke',
+      stylers: [
+        {
+          color: '#1f2835',
+        },
+      ],
+    },
+    {
+      featureType: 'road.highway',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#f3d19c',
+        },
+      ],
+    },
+    {
+      featureType: 'transit',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#2f3948',
+        },
+      ],
+    },
+    {
+      featureType: 'transit.station',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#d59563',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'geometry',
+      stylers: [
+        {
+          color: '#17263c',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'labels.text.fill',
+      stylers: [
+        {
+          color: '#515c6d',
+        },
+      ],
+    },
+    {
+      featureType: 'water',
+      elementType: 'labels.text.stroke',
+      stylers: [
+        {
+          color: '#17263c',
+        },
+      ],
+    },
+  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-      <TouchableOpacity 
-  style={styles.backButton}
-  onPress={() => navigation.goBack()}
->
-  <Icon name="arrowleft" size={20} color="#FFFFFF" />
-</TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.backButton}
+          onPress={() => navigation.goBack()}
+        >
+          <Icon name="arrowleft" size={20} color="#FFFFFF" />
+        </TouchableOpacity>
         <Text style={styles.headername}>Wheel’s & Meals UIUC</Text>
       </View>
       <View style={styles.images}>
@@ -53,21 +256,23 @@ const Description = ({ navigation }) => {
       <View style={styles.map}>
         <MapView
           style={styles.mapStyle}
-          
+          provider={PROVIDER_GOOGLE}
+          customMapStyle={mapStyle}
           initialRegion={{
-            latitude: 40.110588, // Latitude for Green St, Urbana, IL
-            longitude: -88.233296, // Longitude for Green St, Urbana, IL
+            latitude: route.params.truck.coords.lat, // Latitude for Green St, Urbana, IL
+            longitude: route.params.truck.coords.lng, // Longitude for Green St, Urbana, IL
             latitudeDelta: 0.003,
             longitudeDelta: 0.003,
           }}
         >
           <Marker
             coordinate={{
-              latitude: 40.110588, // Latitude for Green St, Urbana, IL
-              longitude: -88.233296, // Longitude for Green St, Urbana, IL
+              latitude: route.params.truck.coords.lat, // Latitude for Green St, Urbana, IL
+              longitude: route.params.truck.coords.lng, // Longitude for Green St, Urbana, IL
             }}
             title={foodtruckname}
             pinColor="#FF5F05" // Use any color you prefer
+            onPress={() => {openDirections()}}
           />
         </MapView>
       </View>
@@ -79,7 +284,11 @@ const Description = ({ navigation }) => {
           <View style={styles.separatorLinetwo} />
       <Text style={styles.contact}>Contact</Text>
       <FontAwesome style={styles.house} name="home" size={20} color='#13294B'/>
-      <Text style={styles.locoedit}>Urbana</Text>
+      <TouchableOpacity onPress={() => {
+        openDirections()
+      }}>
+      <Text style={styles.locoedit}>{route.params.truck.location}</Text>
+      </TouchableOpacity>
       <FontAwesome style={styles.globe} name="globe" size={20} color='#13294B' />
         <TouchableOpacity onPress={async () => {
           const supported = await Linking.canOpenURL(foodtruckurl);
@@ -89,15 +298,11 @@ const Description = ({ navigation }) => {
           console.log("Don't know how to open this URL: " + foodtruckurl);
           }
           }}>
-        <Text style={styles.webbuttonstyle}>Website</Text>
+          <Text style={styles.webbuttonstyle}>
+          Website
+          </Text>
         </TouchableOpacity>
         <View style={styles.separatorLinethree} />
-        <TouchableOpacity 
-        style={styles.facebookButton} 
-        onPress={openFacebookPage}
-        >
-        <FontAwesome name="facebook" size={24} color="#FFFFFF" />
-        </TouchableOpacity>
       </View>
     </View >
   );
@@ -240,6 +445,7 @@ const styles = StyleSheet.create({
     color: '#13294B',
     left:32,
     bottom:38,
+    textDecorationLine: 'underline',
 
   }, 
   house: {
@@ -278,20 +484,4 @@ const styles = StyleSheet.create({
     marginRight: 7,
     bottom:13,
   },
-  facebookButton: {
-    position: 'absolute',
-    right: 19,
-    bottom: isTablet ? '35%' : '22%', // Adjust positioning for tablets
-    backgroundColor: '#3b5998',
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
 });
-const openFacebookPage = () => {
-    const url = foodtruckfacebook
-    Linking.openURL(url).catch(err => console.error("An error occurred", err));
-  };
-export default Description;
