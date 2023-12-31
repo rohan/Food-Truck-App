@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image } from 'react-native';
+import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Nav from './Nav';
 import Header from './Header';
@@ -53,7 +53,10 @@ export default function ListScreen({ navigation }) {
 
   const [loaded] = useFonts({
     Lato: require('../assets/fonts/Lato-Regular.ttf'),
-    
+    QuickSand: require('../assets/fonts/Quicksand-Regular.ttf'),
+    QuickSandBold: require('../assets/fonts/Quicksand-Bold.ttf'),
+    QuickSandMedium: require('../assets/fonts/Quicksand-Medium.ttf'),
+    QuickSandSemiBold: require('../assets/fonts/Quicksand-SemiBold.ttf'),
   });
   if(!loaded) {
     return null;
@@ -101,8 +104,7 @@ export default function ListScreen({ navigation }) {
   );
 
   return (
-    <View style={styles.container}>
-      <Header />
+    <SafeAreaView style={styles.container}>
       <Text style={styles.todayHeader}>Active Food Trucks</Text>
       <FlatList
         data={truckData}
@@ -110,15 +112,15 @@ export default function ListScreen({ navigation }) {
         keyExtractor={(item) => item.key}
       />
       <Nav navigation={navigation} currentScreen="ListScreen" />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightgrey",
-    alignItems: 'stretch', 
+    backgroundColor: "#f3f4f9",
+   
   },
   columnHeaderContainer: {
     flexDirection: 'row',
@@ -137,15 +139,22 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       paddingVertical: 20, 
       paddingHorizontal: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: 'black',
-      width: '100%',
+      width: '90%',
+      marginVertical: 6, // Half of 12 units for spacing between items
+      borderRadius: 20, // Rounded corners
+      alignSelf: 'center', // Ensure each item is centered horizontally
+      shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+
   },
   itemText: {
     flex: 1,
     fontSize: 20,
     color: 'black',
-    fontFamily: 'Lato',
+    fontFamily: 'QuickSandSemiBold',
   },
   image: {
     width: 60, 
@@ -154,24 +163,26 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   todayHeader: {
-    fontSize: 17,
-    fontFamily: 'Lato',
+    fontSize: 20,
+    fontFamily: 'QuickSandMedium',
     color: 'black',
     padding: 10,
     alignSelf: 'flex-start', 
   },
   locationText: {
-    fontSize: 14, // Smaller font size
+    fontSize: 12, // Smaller font size
     color: 'grey',
     fontFamily: 'Lato',
   },
   timeText: {
-    fontSize: 14, // Smaller font size
+    fontSize: 12, // Smaller font size
     color: 'grey',
-    fontFamily: 'Lato',
+    fontFamily: 'QuickSandMedium',
   },
   itemContent: {
     flex: 1,
   },
   
 });
+
+// Remove Header and Changed to SafeAreaView//

@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
         top: '90%',
     },
     mapScreenStyle: {
-        bottom: '77.5%', // Apply bottom margin only for MapScreen
+        bottom: '80.5%', // Apply bottom margin only for MapScreen
     },
 });
 
