@@ -1,4 +1,4 @@
-import {Dimensions, StyleSheet, ImageBackground, Text, View, TouchableOpacity, Linking} from 'react-native';
+import {Dimensions, StyleSheet, Image, Text, View, TouchableOpacity, Linking} from 'react-native';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon from 'react-native-vector-icons/AntDesign'; 
@@ -31,20 +31,16 @@ export default function Description({ navigation, route }) {
 
   const [loaded] = useFonts({
     Lato: require('../assets/fonts/Lato-Regular.ttf'),
-    
+    QuickSand: require('../assets/fonts/Quicksand-Regular.ttf'),
+    QuickSandBold: require('../assets/fonts/Quicksand-Bold.ttf'),
+    QuickSandMedium: require('../assets/fonts/Quicksand-Medium.ttf'),
+    QuickSandSemiBold: require('../assets/fonts/Quicksand-SemiBold.ttf'),
   });
   if(!loaded) {
     return null;
   }
 
-  const openFacebookPage = () => {
-    const url = foodtruckfacebook
-    Linking.openURL(url).catch(err => console.error("An error occurred", err));
-  };
-
-  const openWebsite = () => {
-    Linking.openURL(websiteurl).catch(err => console.error("An error occurred", err))
-  }
+ 
 
   const openDirections = () => {
     const data = {
@@ -235,25 +231,27 @@ export default function Description({ navigation, route }) {
           style={styles.backButton}
           onPress={() => navigation.goBack()}
         >
-          <Icon name="arrowleft" size={20} color="#FFFFFF" />
+          <Icon name="arrowleft" size={25} color="black" />
         </TouchableOpacity>
-        <Text style={styles.headername}>Wheel’s & Meals UIUC</Text>
+      
       </View>
+      <Text style={styles.foodtrucknameedit}>{foodtruckname}</Text>
+      <View style={styles.timeAndTypeContainer}>
+        <MaterialIcons name="access-time" size={24} color="black" />
+        <Text style={styles.timeText}>{time}</Text>
+        <MaterialCommunityIcons name="silverware" size={24} color="black" />
+        <Text style={styles.foodTypeText}>{foodtype}</Text>
+      </View>
+      
+      
       <View style={styles.images}>
-        <ImageBackground 
+        <Image 
           style={styles.imageBackground}
-          source={require(foodtruckflick)} 
-          resizeMode="cover" 
-        >
-          <View style={styles.translucentOverlay} />
-          <Text style={styles.foodtrucknameedit}>{foodtruckname}</Text>
-          <MaterialIcons style={styles.clock} name="access-time" size={24} color="#000" />
-          <Text style={styles.timeedits}>{time}</Text>
-          <MaterialCommunityIcons style={styles.sliverware} name="silverware" size={24} color="#000" />
-          <Text style= {styles.foodtypeedit}> {foodtype}</Text>
-        </ImageBackground>
+          source={require(foodtruckflick)} // Replace with the correct image path
+        />
       </View>
       <View style={styles.map}>
+       
         <MapView
           style={styles.mapStyle}
           provider={PROVIDER_GOOGLE}
@@ -275,6 +273,7 @@ export default function Description({ navigation, route }) {
             onPress={() => {openDirections()}}
           />
         </MapView>
+        
       </View>
       <View style={styles.aboutus}>
       <View style={styles.separatorLineone} />
@@ -283,13 +282,13 @@ export default function Description({ navigation, route }) {
           <Text style={styles.descpition}>Indulge in the savory delights of the Rolling Bistro, a gourmet food truck specializing in a fusion of classic American and exotic Mediterranean flavors.</Text>
           <View style={styles.separatorLinetwo} />
       <Text style={styles.contact}>Contact</Text>
-      <FontAwesome style={styles.house} name="home" size={20} color='#13294B'/>
+      <FontAwesome style={styles.house} name="home" size={20} color='black'/>
       <TouchableOpacity onPress={() => {
         openDirections()
       }}>
       <Text style={styles.locoedit}>{route.params.truck.location}</Text>
       </TouchableOpacity>
-      <FontAwesome style={styles.globe} name="globe" size={20} color='#13294B' />
+      <FontAwesome style={styles.globe} name="globe" size={20} color='black' />
         <TouchableOpacity onPress={async () => {
           const supported = await Linking.canOpenURL(foodtruckurl);
           if (supported) {
@@ -302,7 +301,7 @@ export default function Description({ navigation, route }) {
           Website
           </Text>
         </TouchableOpacity>
-        <View style={styles.separatorLinethree} />
+       
       </View>
     </View >
   );
@@ -311,70 +310,72 @@ export default function Description({ navigation, route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#13294B',
+    backgroundColor: '#f3f4f9',
+    
+
   },
   header: {
     flex: 0.4,
-    backgroundColor: '#13294B',
+    backgroundColor: '#f3f4f9',
     justifyContent: 'center',
     alignItems: 'center',
     padding: 10,
   },
   images: {
-    flex: 1.4,
-    backgroundColor: 'gold',
+    // Reduced from 1.4 for a smaller size
+    flex: 1, // Adjust flex to control the size
     justifyContent: 'center',
     alignItems: 'center',
+    padding: 10,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  imageBackground: {
+    width: '45%',
+    height: '88%',
+    borderRadius: 20,
+    overflow: 'hidden',
+    bottom: '90%',
+    left: '24%',
+    position: 'relative',
   },
   map: {
-    flex: 1.7,
-    backgroundColor: 'green',
+    flex: 1,
+    backgroundColor: '#f3f4f9',
     justifyContent: 'center',
     alignItems: 'center',
-
-  },
-  aboutus: {
-    flex:1.6,
-    backgroundColor: 'white',
-  },
-
-  headername: {
-    fontSize: 20,
-    fontFamily: "Lato",
-    justifyContent: 'center',
-    alignItems: 'center',
-    top: 4,
-    fontWeight: 'bold',
-    color: 'white',
   },
   timeedits: {
     fontSize: 20,
     fontFamily: 'Lato',
     justifyContent: 'center',
     alignItems: 'center',
-    top: 91,
-    left: 31,
-    color: '#13294B',
+    color: 'black',
+    flexDirection: 'row',
   },
   clock: {
-    top:116,
-    color: '#13294B',
+    color: 'black',
     left: 4,
+    flexDirection: 'row',
   },
   foodtypeedit: {
     fontSize: 20,
     fontFamily: 'Lato',
     justifyContent: 'center',
     alignItems: 'center',
-    bottom: 21,
-    color: '#13294B',
-    top:67,
-    left:29,
+    position: 'relative',
+    color: 'black',
+    flexDirection: 'row',
+    marginLeft: 5,
+
+
   },
   sliverware: {
-    color: '#13294B',
-    top:93,
-    left:4,
+    color: 'black',
+    flexDirection: 'row',
+    marginLeft: 5,
 
   },
   backButton: {
@@ -383,105 +384,116 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: "#FF5F05",
     right: isTablet ? 540 : 160, // Adjust positioning for tablets
     top: 30,
   },
-  imageBackground: {
-    width: '100%', // Ensure the width covers the parent
-    height: '100%', // Ensure the height covers the parent
-  },
-  translucentOverlay: {
-    ...StyleSheet.absoluteFillObject, // This will cover the entire parent view
-    backgroundColor: 'rgba(255, 255, 255, 0.5)', // Adjust the opacity to your liking
-  },
   foodtrucknameedit: {
-    fontSize: 40,
-    fontFamily: 'Lato',
-    fontWeight: 'bold',
-    color: '#13294B',
-    top:116,
-    left:4,
+    fontSize: 55,
+    fontFamily: 'QuickSandSemiBold',
+    color: 'black',
+    position: 'relative',
+    top:'3%',
+    marginLeft: 20,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   mapStyle: {
-    width: '100%',
-    height: '100%',
+    width: '90%', // Adjust width to half of the parent minus padding
+    height: 200, // Fixed height to match the image
+    borderRadius: 20, // Rounded corners
+    overflow: 'hidden',
+    postion: 'relative',
+    bottom: '56%',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  
   },
   descpition: {
-    fontSize:15,
-    fontFamily: 'Lato',
-    color: '#13294B',
-    bottom:8,
-    left: 8,
+    fontSize:14,
+    fontFamily: 'QuickSandMedium',
+    color: 'black',
+   
   },
   aboutusedit: {
     fontSize:22,
-    fontFamily: 'Lato',
-    color: '#13294B',
-    bottom:12,
-    left:8,
+    fontFamily: 'QuickSandMedium',
+    color: 'black',
+    
   },
   contact: {
     fontSize:22,
-    fontFamily: 'Lato',
-    color: '#13294B',
-    bottom:26,
-    left:8,
+    fontFamily: 'QuickSandMedium',
+    color: 'black',
+    position: 'relative', 
+    top: '2%', 
+    
   },
   webbuttonstyle: {
-    fontSize: 15,
-    fontFamily: 'Lato',
+    fontSize: 13,
+    fontFamily: 'QuickSandMedium',
     justifyContent: 'center',
     alignItems: 'center',
-    color: '#13294B',
+    color: 'black',
     textDecorationLine: 'underline',
-    bottom:49,
-    left:32,
+    bottom: '120%',
+    left: '10%',
+    position: 'relative',
     
   },
   locoedit: {
-    fontSize:15,
-    fontFamily: 'Lato',
-    color: '#13294B',
-    left:32,
-    bottom:38,
+    fontSize:13,
+    fontFamily: 'QuickSandMedium',
+    color: 'black',
     textDecorationLine: 'underline',
+    position: 'relative',
+    bottom: '25%',
+    left: '10%',
+    width: '80%',
 
   }, 
   house: {
-    left:8,
-    bottom:19,
+    top: '6%',
+     
   },
   globe: {
-    left:8,
-    bottom:28,
+    position: 'relative',
+    bottom: '1%',
+     
   },
-  
-  separatorLineone: {
-    height: 1, // Thin line
-    backgroundColor: 'grey', // Grey color
-    marginTop: 15, // Adjust spacing above the line
-    marginBottom: 15, // Adjust spacing below the line
-    marginLeft: 7, // Adds space on the left side
-    marginRight: 7,
+  aboutus: {
+    flex: 1.6,
+    backgroundColor: 'white', // White background
+    borderRadius: 20, // Rounded corners
+    padding: 10, // Padding for content inside
+    margin: 15, // Margin from the edges of the screen
+    postion: 'relative',
+    bottom: '3%',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
     
   },
-  separatorLinethree: {
-    height: 1, // Thin line
-    backgroundColor: 'grey', // Grey color
-    marginTop: 15, // Adjust spacing above the line
-    marginBottom: 15, // Adjust spacing below the line
-    marginLeft: 7, // Adds space on the left side
-    marginRight: 7,
-    bottom:50,
+  timeAndTypeContainer: {
+    backgroundColor: 'white', 
+    borderRadius: 20, 
+    padding: 10, 
+    margin: 15, 
+    postion: 'relative',
+    width: '45%',
+    height: '14%',
+    top: '4%',
+    flexDirection: 'column',
+    flexDirection: 'column',
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
   },
-  separatorLinetwo: {
-    height: 1, // Thin line
-    backgroundColor: 'grey', // Grey color
-    marginTop: 15, // Adjust spacing above the line
-    marginBottom: 15, // Adjust spacing below the line
-    marginLeft: 7, // Adds space on the left side
-    marginRight: 7,
-    bottom:13,
-  },
+
+
 });
+
+// Header Temporary Removed//

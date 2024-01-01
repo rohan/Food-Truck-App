@@ -40,17 +40,23 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginLeft: '7.5%',
         height: '100%',
-        top: '5%',
+        top: '6%',
     },
     mapScreenStyle: {
-        bottom: '164%', // Apply bottom margin only for MapScreen
+        backgroundColor: '#13294B',
+        paddingVertical: 30,
+        justifyContent: 'center',
+        width: '100%',
+        alignItems: 'center',
+        flexDirection: 'row',
+        bottom: '173%', // Apply bottom margin only for MapScreen
     },
     refreshButton: {
         color: 'white',
         width: '7%',
         justifyContent: 'center',
         alignSelf: 'center',
-        top: '3%',
+        top: '3.5%',
         left: '50%'
     }
 });

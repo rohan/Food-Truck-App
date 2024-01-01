@@ -1,4 +1,4 @@
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, View, TouchableOpacity, Image } from 'react-native';
 import * as React from 'react';
 import MapView, { PROVIDER_GOOGLE, Marker } from 'react-native-maps';
 import Nav from './Nav';
@@ -230,6 +230,10 @@ export default function MapScreen({ navigation }) {
     }
 
     const _mapView = React.createRef();
+    React.useEffect(() => {
+      _animateToFitMarkers(truckData);
+    }, [truckData, _mapView.current != null])
+
     function _animateToUserPosition(coordinate) {
         if (_mapView.current) {
           _mapView.current.animateToRegion(
@@ -244,39 +248,58 @@ export default function MapScreen({ navigation }) {
         }
     }
 
+    function _animateToFitMarkers(markers) {
+      if (_mapView.current && markers.length > 0) {
+        _mapView.current.fitToSuppliedMarkers(
+          markers.map(({ key }) => key),
+          {
+            animated: true,
+            edgePadding: {
+              top: 20,
+              left: 20,
+              right: 20,
+              bottom: 20
+            }
+          }
+        );
+      }
+    }
+
+    const [currentUserLocation, setCurrentUserLocation] = React.useState();
     return (
     <View style={styles.container}>
-       <Header handleRefresh={() => {
-                setTimeout(() => {
-                  const dbRef = ref(db);
-                  get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
-                      if (snapshot.exists()) {
-                          const data = snapshot.val();
-                          const trucks = Object.keys(data).map(key => ({
-                              ...data[key]
-                          }))
-                          const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
-                          setTruckData([]);
-                          Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
-                          for (let i = 0; i < sortedTruckData.length; i++) {
-                            Geocoder.from(sortedTruckData[i].location)
-                            .then(json => {
-                              var location = json.results[0].geometry.location;
-                              sortedTruckData[i].coords = location;
-                              setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-                            })
-                            .catch(error => console.warn(error));
-                          }
-                      } else {
-                          console.log("No data available");
-                      }
-                  }).catch((error) => {
-                      console.error(error);
-                  });
-                  
-                  setLoading(false);
-                }, 1000);       
-        }}/>
+       <Header currentScreen="MapScreen" handleRefresh={() => {
+          setTimeout(() => {
+            const dbRef = ref(db);
+            get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const data = snapshot.val();
+                    const trucks = Object.keys(data).map(key => ({
+                        ...data[key]
+                    }))
+                    const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+                    setTruckData([]);
+                    Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
+                    for (let i = 0; i < sortedTruckData.length; i++) {
+                      Geocoder.from(sortedTruckData[i].location)
+                      .then(json => {
+                        var location = json.results[0].geometry.location;
+                        sortedTruckData[i].coords = location;
+                        setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                      })
+                      .catch(error => console.warn(error));
+                    }
+                } else {
+                    console.log("No data available");
+                }
+            }).catch((error) => {
+                console.error(error);
+            });
+            
+            setLoading(false);
+          }, 1000);  
+        }}
+        />
         <MapView 
             style={styles.map}
             customMapStyle={mapStyle}
@@ -287,16 +310,22 @@ export default function MapScreen({ navigation }) {
             zoomEnabled={true}
             scrollEnabled={true}
             ref={_mapView}
-            onUserLocationChange={(userPosition) => {
-              if (screenJustFocused) {
-                _animateToUserPosition(userPosition.nativeEvent.coordinate);
-                setScreenJustFocused(false);
-              }
-            }}
+            onUserLocationChange={(pos) => setCurrentUserLocation(pos.nativeEvent.coordinate)}
         >
            {mapMarkers()}
         </MapView>
-        <Header currentScreen="MapScreen" />
+        <TouchableOpacity
+          style={styles.locationFocus}
+          onPress={() => {
+            _animateToUserPosition(currentUserLocation);
+          }}
+        >
+          <Image
+            source={require('../assets/newtarget.png')}
+            style={{ width: '100%', height: '100%' }}
+            resizeMode={'contain'}
+          />
+        </TouchableOpacity>
         <Nav navigation={navigation} currentScreen="MapScreen" />
     </View>
     );
@@ -333,5 +362,19 @@ const styles = StyleSheet.create({
 descriptionButtonText: {
     color: 'white',
     fontWeight: 'bold',
-}
+},
+locationFocus: {
+  backgroundColor: '#d4d4d4',
+  width: 40,
+  height: 50,
+  marginHorizontal: '2%',
+  bottom: '10%',
+  borderRadius: 30,
+  borderWidth: 1,
+  borderColor: 'white',
+  padding: 12,
+  position: 'absolute',
+  alignSelf: 'flex-end',
+  right: '5%'
+},
 });

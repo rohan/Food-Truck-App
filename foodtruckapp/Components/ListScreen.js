@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image, TextInput } from 'react-native';
+import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image, TextInput, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Nav from './Nav';
 import Header from './Header';
@@ -75,14 +75,6 @@ export default function ListScreen({ navigation }) {
        }
     }
 
-    const [loaded] = useFonts({
-      Lato: require('../assets/fonts/Lato-Regular.ttf'),
-      
-    });
-    if(!loaded) {
-      return null;
-    }  
-
     return (
       <TouchableOpacity style={styles.item} onPress={() => navigation.navigate('Description', {truck: item})}>
         {truckToImageMap.get(item.name) && <Image source={truckToImageMap.get(item.name)} style={styles.image} />}
@@ -102,39 +94,49 @@ export default function ListScreen({ navigation }) {
   );
 
   const [search, setSearch] = React.useState("");
-
+  const [loaded] = useFonts({
+    Lato: require('../assets/fonts/Lato-Regular.ttf'),
+    QuickSand: require('../assets/fonts/Quicksand-Regular.ttf'),
+    QuickSandBold: require('../assets/fonts/Quicksand-Bold.ttf'),
+    QuickSandMedium: require('../assets/fonts/Quicksand-Medium.ttf'),
+    QuickSandSemiBold: require('../assets/fonts/Quicksand-SemiBold.ttf'),
+  });
+  if(!loaded) {
+    return null;
+  }
   return (
     <View style={styles.container}>
-      <Header handleRefresh={() => {
-              setTimeout(() => {
-                const dbRef = ref(db);
-                get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
-                  if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const trucks = Object.keys(data).map(key => ({
-                        ...data[key]
-                    }))
-                    const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
-                    setTruckData([]);
-                    Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
-                    for (let i = 0; i < sortedTruckData.length; i++) {
-                      Geocoder.from(sortedTruckData[i].location)
-                      .then(json => {
-                        var location = json.results[0].geometry.location;
-                        sortedTruckData[i].coords = location;
-                        setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-                      })
-                      .catch(error => console.warn(error));
-                    }
-                } else {
-                    console.log("No data available");
-                }
-                }).catch((error) => {
-                    console.error(error);
-                });
-              }, 1000);    
-      }}/>
-      <Text style={styles.todayHeader}>Active Food Trucks</Text>
+        <Header handleRefresh={() => {
+                setTimeout(() => {
+                  const dbRef = ref(db);
+                  get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
+                      if (snapshot.exists()) {
+                          const data = snapshot.val();
+                          const trucks = Object.keys(data).map(key => ({
+                              ...data[key]
+                          }))
+                          const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+                          setTruckData([]);
+                          Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
+                          for (let i = 0; i < sortedTruckData.length; i++) {
+                            Geocoder.from(sortedTruckData[i].location)
+                            .then(json => {
+                              var location = json.results[0].geometry.location;
+                              sortedTruckData[i].coords = location;
+                              setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                            })
+                            .catch(error => console.warn(error));
+                          }
+                      } else {
+                          console.log("No data available");
+                      }
+                  }).catch((error) => {
+                      console.error(error);
+                  });
+                  
+                  setLoading(false);
+                }, 1000);       
+        }}/>
       <View style={styles.searchBar}>
         <MaterialIcons style={styles.searchIcon} name="search" size={30} color="#000" />
         <TextInput 
@@ -151,6 +153,7 @@ export default function ListScreen({ navigation }) {
         data={truckData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
+        contentContainerStyle={{marginTop: 6}}
       />
       <Nav navigation={navigation} currentScreen="ListScreen" />
     </View>
@@ -160,8 +163,8 @@ export default function ListScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "lightgrey",
-    alignItems: 'stretch', 
+    backgroundColor: "#f3f4f9",
+   
   },
   columnHeaderContainer: {
     flexDirection: 'row',
@@ -180,15 +183,22 @@ const styles = StyleSheet.create({
       backgroundColor: 'white',
       paddingVertical: 20, 
       paddingHorizontal: 20,
-      borderBottomWidth: 1,
-      borderBottomColor: 'black',
-      width: '100%',
+      width: '90%',
+      marginVertical: 6, // Half of 12 units for spacing between items
+      borderRadius: 20, // Rounded corners
+      alignSelf: 'center', // Ensure each item is centered horizontally
+      shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+
+
   },
   itemText: {
     flex: 1,
     fontSize: 20,
     color: 'black',
-    fontFamily: 'Lato',
+    fontFamily: 'QuickSandSemiBold',
   },
   image: {
     width: 60, 
@@ -197,21 +207,21 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   todayHeader: {
-    fontSize: 17,
-    fontFamily: 'Lato',
+    fontSize: 20,
+    fontFamily: 'QuickSandMedium',
     color: 'black',
     padding: 10,
     alignSelf: 'flex-start', 
   },
   locationText: {
-    fontSize: 14, // Smaller font size
+    fontSize: 12, // Smaller font size
     color: 'grey',
     fontFamily: 'Lato',
   },
   timeText: {
-    fontSize: 14, // Smaller font size
+    fontSize: 12, // Smaller font size
     color: 'grey',
-    fontFamily: 'Lato',
+    fontFamily: 'QuickSandMedium',
   },
   itemContent: {
     flex: 1,
@@ -237,3 +247,5 @@ const styles = StyleSheet.create({
     width: '10%'
   }
 });
+
+// Remove Header and Changed to SafeAreaView//
