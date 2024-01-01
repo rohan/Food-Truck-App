@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { useFonts } from 'expo-font';
+import Foundation from 'react-native-vector-icons/Foundation';
 
-const Header = ({ currentScreen }) => {
+const Header = ({ currentScreen, handleRefresh }) => {
     const [loaded] = useFonts({
         Lato: require('../assets/fonts/Lato-Regular.ttf'),
     });
@@ -14,6 +15,9 @@ const Header = ({ currentScreen }) => {
     return (
         <View style={[styles.safeArea, currentScreen === 'MapScreen' ? styles.mapScreenStyle : null]}>
             <Text style={styles.headerTitle}>Wheel's & Meals UIUC</Text>
+            <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
+                <Foundation name="refresh" size={40} color="white"/>
+            </TouchableOpacity>
         </View>
     );
 };
@@ -22,20 +26,39 @@ const styles = StyleSheet.create({
     safeArea: {
         backgroundColor: '#13294B',
         paddingVertical: 30,
-        justifyContent: 'flex-end',
+        justifyContent: 'center',
         width: '100%',
         alignItems: 'center',
+        flexDirection: 'row',
     },
     headerTitle: {
         fontSize: 20,
         fontFamily: "Lato",
         fontWeight: 'bold',
         color: 'white',
-        top: '90%',
+        width: '60%',
+        textAlign: 'center',
+        marginLeft: '7.5%',
+        height: '100%',
+        top: '6%',
     },
     mapScreenStyle: {
-        bottom: '80.5%', // Apply bottom margin only for MapScreen
+        backgroundColor: '#13294B',
+        paddingVertical: 30,
+        justifyContent: 'center',
+        width: '100%',
+        alignItems: 'center',
+        flexDirection: 'row',
+        bottom: '173%', // Apply bottom margin only for MapScreen
     },
+    refreshButton: {
+        color: 'white',
+        width: '7%',
+        justifyContent: 'center',
+        alignSelf: 'center',
+        top: '3.5%',
+        left: '50%'
+    }
 });
 
 export default Header;

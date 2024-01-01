@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image, TextInput, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Nav from './Nav';
 import Header from './Header';
-import {useFonts} from 'expo-font';
+import { useFonts } from 'expo-font';
 import { db } from './Config';
 import { ref, get, child } from 'firebase/database';
 import Geocoder from 'react-native-geocoding';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default function ListScreen({ navigation }) {
 
@@ -51,17 +52,6 @@ export default function ListScreen({ navigation }) {
     return unsubscribe;
   }, [navigation]);
 
-  const [loaded] = useFonts({
-    Lato: require('../assets/fonts/Lato-Regular.ttf'),
-    QuickSand: require('../assets/fonts/Quicksand-Regular.ttf'),
-    QuickSandBold: require('../assets/fonts/Quicksand-Bold.ttf'),
-    QuickSandMedium: require('../assets/fonts/Quicksand-Medium.ttf'),
-    QuickSandSemiBold: require('../assets/fonts/Quicksand-SemiBold.ttf'),
-  });
-  if(!loaded) {
-    return null;
-  }
-
   const truckToImageMap = new Map([
     ["Sample", require('../assets/Food_trucks_Pitt_09.jpg')],
     ["JGrill", require('../assets/JG.png')],
@@ -103,16 +93,70 @@ export default function ListScreen({ navigation }) {
     <Item item={item} />
   );
 
+  const [search, setSearch] = React.useState("");
+  const [loaded] = useFonts({
+    Lato: require('../assets/fonts/Lato-Regular.ttf'),
+    QuickSand: require('../assets/fonts/Quicksand-Regular.ttf'),
+    QuickSandBold: require('../assets/fonts/Quicksand-Bold.ttf'),
+    QuickSandMedium: require('../assets/fonts/Quicksand-Medium.ttf'),
+    QuickSandSemiBold: require('../assets/fonts/Quicksand-SemiBold.ttf'),
+  });
+  if(!loaded) {
+    return null;
+  }
   return (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.todayHeader}>Active Food Trucks</Text>
+    <View style={styles.container}>
+        <Header handleRefresh={() => {
+                setTimeout(() => {
+                  const dbRef = ref(db);
+                  get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
+                      if (snapshot.exists()) {
+                          const data = snapshot.val();
+                          const trucks = Object.keys(data).map(key => ({
+                              ...data[key]
+                          }))
+                          const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+                          setTruckData([]);
+                          Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
+                          for (let i = 0; i < sortedTruckData.length; i++) {
+                            Geocoder.from(sortedTruckData[i].location)
+                            .then(json => {
+                              var location = json.results[0].geometry.location;
+                              sortedTruckData[i].coords = location;
+                              setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                            })
+                            .catch(error => console.warn(error));
+                          }
+                      } else {
+                          console.log("No data available");
+                      }
+                  }).catch((error) => {
+                      console.error(error);
+                  });
+                  
+                  setLoading(false);
+                }, 1000);       
+        }}/>
+      <View style={styles.searchBar}>
+        <MaterialIcons style={styles.searchIcon} name="search" size={30} color="#000" />
+        <TextInput 
+          placeholder='Search...'
+          onChangeText={setSearch}
+          value={search}
+          style={styles.searchText}
+        />
+        <TouchableOpacity onPress={() => {setSearch("")}}>
+          <MaterialIcons name="close" size={32} color="#000" />
+        </TouchableOpacity>
+      </View>
       <FlatList
-        data={truckData}
+        data={truckData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
+        contentContainerStyle={{marginTop: 6}}
       />
       <Nav navigation={navigation} currentScreen="ListScreen" />
-    </SafeAreaView>
+    </View>
   );
 }
 
@@ -182,7 +226,26 @@ const styles = StyleSheet.create({
   itemContent: {
     flex: 1,
   },
-  
+  searchBar: {
+    height: '8%',
+    backgroundColor: 'white',
+    borderBottomWidth: 1,
+    borderBottomColor: 'black',
+    width: '100%',
+    paddingHorizontal: '4%',
+    justifyContent: 'flex-start',
+    flexDirection: 'row',
+    alignItems: 'center'
+  },
+  searchText: {
+    fontSize: 30,
+    color: 'black',
+    fontFamily: 'Lato',
+    width: '80%'
+  },
+  searchIcon: {
+    width: '10%'
+  }
 });
 
 // Remove Header and Changed to SafeAreaView//
