@@ -14,7 +14,7 @@ const Header = ({ currentScreen, handleRefresh }) => {
 
     return (
         <View style={[styles.safeArea, currentScreen === 'MapScreen' ? styles.mapScreenStyle : null]}>
-            <Text style={styles.headerTitle}>Wheel's & Meals UIUC</Text>
+            <Text style={styles.headerTitle}>Meals on Wheels</Text>
             <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
                 <Foundation name="refresh" size={40} color="white"/>
             </TouchableOpacity>
@@ -32,18 +32,18 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     headerTitle: {
-        fontSize: 20,
+        fontSize: 24,
         fontFamily: "Lato",
         fontWeight: 'bold',
         color: 'white',
-        width: '60%',
+        width: '65%',
         textAlign: 'center',
         marginLeft: '7.5%',
         height: '100%',
-        top: '6%',
+        top: '5%',
     },
     mapScreenStyle: {
-        backgroundColor: '#13294B',
+        // backgroundColor: '#ffffff',
         paddingVertical: 30,
         justifyContent: 'center',
         width: '100%',
