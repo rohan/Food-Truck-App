@@ -31,13 +31,18 @@ export default function ListScreen({ navigation }) {
             setTruckData([]);
             Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
             for (let i = 0; i < sortedTruckData.length; i++) {
-              Geocoder.from(sortedTruckData[i].location)
-              .then(json => {
-                var location = json.results[0].geometry.location;
-                sortedTruckData[i].coords = location;
-                setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-              })
-              .catch(error => console.warn(error));
+              const startDate = new Date(sortedTruckData[i].startTime);
+              const endDate = new Date(sortedTruckData[i].endTime);
+              const currentDate = new Date(Date.now());
+              if (currentDate >= startDate && currentDate <= endDate) {
+                Geocoder.from(sortedTruckData[i].location)
+                .then(json => {
+                  var location = json.results[0].geometry.location;
+                  sortedTruckData[i].coords = location;
+                  setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                })
+                .catch(error => console.warn(error));
+              }
             }
         } else {
             console.log("No data available");
@@ -121,13 +126,18 @@ export default function ListScreen({ navigation }) {
                           setTruckData([]);
                           Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
                           for (let i = 0; i < sortedTruckData.length; i++) {
-                            Geocoder.from(sortedTruckData[i].location)
-                            .then(json => {
-                              var location = json.results[0].geometry.location;
-                              sortedTruckData[i].coords = location;
-                              setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-                            })
-                            .catch(error => console.warn(error));
+                            const startDate = new Date(sortedTruckData[i].startTime);
+                            const endDate = new Date(sortedTruckData[i].endTime);
+                            const currentDate = new Date(Date.now());
+                            if (currentDate >= startDate && currentDate <= endDate) {
+                              Geocoder.from(sortedTruckData[i].location)
+                              .then(json => {
+                                var location = json.results[0].geometry.location;
+                                sortedTruckData[i].coords = location;
+                                setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                              })
+                              .catch(error => console.warn(error));
+                            }
                           }
                       } else {
                           console.log("No data available");

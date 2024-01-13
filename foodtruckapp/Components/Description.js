@@ -6,6 +6,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {useFonts} from 'expo-font'
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import getDirections from 'react-native-google-maps-directions';
+import foodTruckAttributeMap from './FoodTruckAttributes';
 
 const windowWidth = Dimensions.get('window').width;
 const isTablet = windowWidth > 768; 
@@ -13,10 +14,10 @@ const isTablet = windowWidth > 768;
 export default function Description({ navigation, route }) {
   const time = getTime(route.params.truck.startTime) + " to " + getTime(route.params.truck.endTime);
   const foodtruckname= route.params.truck.name;
-  const foodtype= "[CUISINE TYPE]";
-  const websiteurl= "[WEBSITE URL]";
-  const foodtruckflick= "../assets/Food_trucks_Pitt_09.jpg";
-  const foodtruckfacebook= "https://www.facebook.com/Cristiano/"
+  const foodtype= foodTruckAttributeMap().get(foodtruckname).cuisineType;
+  const websiteurl= foodTruckAttributeMap().get(foodtruckname).websiteURL;
+  const foodtruckflick= foodTruckAttributeMap().get(foodtruckname).image;
+  const foodtruckdescription = foodTruckAttributeMap().get(foodtruckname).description;
 
   function getTime(date) {
     const time =  date.split("T")[1];
@@ -244,7 +245,6 @@ export default function Description({ navigation, route }) {
         <Text style={styles.timeText}>{time}</Text>
         <Text style={styles.foodTypeText}>{foodtype}</Text>
       </ImageBackground>
-
       <View style={styles.map}>
        
         <MapView
@@ -270,7 +270,6 @@ export default function Description({ navigation, route }) {
         </MapView>
         
       </View>
-
       <View style={styles.aboutUsContainer}>
         <Text style={styles.aboutUsHeader}>About Us</Text>
         
@@ -287,11 +286,11 @@ export default function Description({ navigation, route }) {
         </TouchableOpacity>
         <FontAwesome style={styles.globe} name="globe" size={20} color='black' />
         <TouchableOpacity onPress={async () => {
-          const supported = await Linking.canOpenURL(foodtruckurl);
+          const supported = await Linking.canOpenURL(websiteurl);
           if (supported) {
-          await Linking.openURL(foodtruckurl);
+          await Linking.openURL(websiteurl);
           } else {
-          console.log("Don't know how to open this URL: " + foodtruckurl);
+          console.log("Don't know how to open this URL: " + websiteurl);
           }
           }}>
           <Text style={styles.websiteLink}>
