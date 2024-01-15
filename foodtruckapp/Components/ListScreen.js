@@ -21,6 +21,7 @@ export default function ListScreen({ navigation }) {
       setTimeout(() => {
         const dbRef = ref(db);
         get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
+        // get(child(dbRef, `users/`)).then((snapshot) => {
           if (snapshot.exists()) {
             const data = snapshot.val();
             const trucks = Object.keys(data).map(key => ({
@@ -105,6 +106,7 @@ export default function ListScreen({ navigation }) {
     QuickSandBold: require('../assets/fonts/Quicksand-Bold.ttf'),
     QuickSandMedium: require('../assets/fonts/Quicksand-Medium.ttf'),
     QuickSandSemiBold: require('../assets/fonts/Quicksand-SemiBold.ttf'),
+    PlayfairDisplay: require("../assets/fonts/PlayfairDisplay-VariableFont_wght.ttf"),
   });
   if(!loaded) {
     return null;
