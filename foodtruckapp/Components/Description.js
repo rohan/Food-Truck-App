@@ -229,7 +229,7 @@ export default function Description({ navigation, route }) {
   return (
     <View style={styles.container}>
 
-      <ImageBackground source={require(foodtruckflick)} style={styles.bgImage}>
+      <ImageBackground source={foodtruckflick} style={styles.bgImage}>
         <View style={styles.header}>
           <TouchableOpacity 
             style={styles.backButton}
