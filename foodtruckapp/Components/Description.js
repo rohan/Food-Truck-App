@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   },
   foodTruckName: {
     fontSize: 48,
-    fontFamily: 'PlayfairDisplay',
+    fontFamily: 'QuickSandMedium',
     color: 'white',
     position: 'relative',
     bottom: "7.5%",
