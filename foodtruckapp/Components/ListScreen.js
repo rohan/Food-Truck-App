@@ -153,6 +153,7 @@ export default function ListScreen({ navigation }) {
         <MaterialIcons style={styles.searchIcon} name="search" size={30} color="#000" />
         <TextInput 
           placeholder='Search...'
+          placeholderColor = '#000'
           onChangeText={setSearch}
           value={search}
           style={styles.searchText}
@@ -165,7 +166,6 @@ export default function ListScreen({ navigation }) {
         data={truckData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
-        contentContainerStyle={{marginTop: 6}}
       />
       <Nav navigation={navigation} currentScreen="ListScreen" />
     </View>
@@ -175,7 +175,7 @@ export default function ListScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#f3f4f9",
+    backgroundColor: "#000000",
    
   },
   columnHeaderContainer: {
@@ -239,19 +239,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   searchBar: {
-    height: '8%',
+    height: '5%',
+    marginVertical: '5%',
     backgroundColor: 'white',
     borderBottomWidth: 1,
     borderBottomColor: 'black',
-    width: '100%',
+    borderRadius: 35,
+    width: '90%',
     paddingHorizontal: '4%',
     justifyContent: 'flex-start',
     flexDirection: 'row',
-    alignItems: 'center'
+    alignItems: 'center',
+    alignSelf: 'center'
   },
   searchText: {
     fontSize: 30,
-    color: 'black',
+    color: 'white',
     fontFamily: 'Lato',
     width: '80%'
   },
