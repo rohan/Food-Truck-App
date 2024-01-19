@@ -90,7 +90,7 @@ export default function ListScreen({ navigation }) {
           <Text style={styles.timeText}>{getDate()}</Text>
           <Text style={styles.timeText}>{getTime(item.startTime)} to {getTime(item.endTime)}</Text>
         </View>
-        <Ionicons name="arrow-forward" size={20} color="black" />
+        <Ionicons name="arrow-forward" size={20} color="white" />
       </TouchableOpacity>
     )
   }
@@ -113,7 +113,10 @@ export default function ListScreen({ navigation }) {
   }
   return (
     <View style={styles.container}>
-        <Header handleRefresh={() => {
+        <Header 
+        currentScreen={"ListScreen"}
+        handleNav={() => {navigation.navigate('MapScreen')}}
+        handleRefresh={() => {
                 setTimeout(() => {
                   const dbRef = ref(db);
                   get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
@@ -167,7 +170,6 @@ export default function ListScreen({ navigation }) {
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
       />
-      <Nav navigation={navigation} currentScreen="ListScreen" />
     </View>
   );
 }
@@ -191,25 +193,21 @@ const styles = StyleSheet.create({
   },
   item: {
     flexDirection: 'row',
-      alignItems: 'center',
-      backgroundColor: 'white',
-      paddingVertical: 20, 
-      paddingHorizontal: 20,
-      width: '90%',
-      marginVertical: 6, // Half of 12 units for spacing between items
-      borderRadius: 20, // Rounded corners
-      alignSelf: 'center', // Ensure each item is centered horizontally
-      shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    alignItems: 'center',
+    backgroundColor: '#242526',
+    paddingVertical: 20, 
+    paddingHorizontal: 20,
+    width: '90%',
+    marginVertical: 6, // Half of 12 units for spacing between items
+    borderRadius: 20, // Rounded corners
+    alignSelf: 'center', // Ensure each item is centered horizontally
 
 
   },
   itemText: {
     flex: 1,
     fontSize: 20,
-    color: 'black',
+    color: 'white',
     fontFamily: 'QuickSandSemiBold',
   },
   image: {
@@ -227,12 +225,12 @@ const styles = StyleSheet.create({
   },
   locationText: {
     fontSize: 12, // Smaller font size
-    color: 'grey',
+    color: '#B0B3B8',
     fontFamily: 'Lato',
   },
   timeText: {
     fontSize: 12, // Smaller font size
-    color: 'grey',
+    color: '#B0B3B8',
     fontFamily: 'QuickSandMedium',
   },
   itemContent: {
@@ -253,8 +251,8 @@ const styles = StyleSheet.create({
     alignSelf: 'center'
   },
   searchText: {
-    fontSize: 30,
-    color: 'white',
+    fontSize: 20,
+    color: 'black',
     fontFamily: 'Lato',
     width: '80%'
   },

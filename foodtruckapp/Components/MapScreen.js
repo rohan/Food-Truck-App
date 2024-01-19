@@ -268,7 +268,9 @@ export default function MapScreen({ navigation }) {
     const [currentUserLocation, setCurrentUserLocation] = React.useState();
     return (
     <View style={styles.container}>
-       <Header currentScreen="MapScreen" handleRefresh={() => {
+       <Header currentScreen="MapScreen"         
+          handleNav={() => {navigation.navigate('ListScreen')}}
+          handleRefresh={() => {
           setTimeout(() => {
             const dbRef = ref(db);
             get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
@@ -326,7 +328,6 @@ export default function MapScreen({ navigation }) {
             resizeMode={'contain'}
           />
         </TouchableOpacity>
-        <Nav navigation={navigation} currentScreen="MapScreen" />
     </View>
     );
 }
@@ -336,13 +337,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     backgroundColor: '#13294B',
-    justifyContent: 'flex-end',
-    alignItems: "stretch"
   },
   map: {
     width: '100%',
-    height: '90%',
-    position: 'absolute',
+    height: '87.9%',
   },
   paragraph: {
     margin: 24,
@@ -368,13 +366,14 @@ locationFocus: {
   width: 40,
   height: 50,
   marginHorizontal: '2%',
-  bottom: '10%',
-  borderRadius: 30,
+  bottom: '3%',
+  borderRadius: 40,
   borderWidth: 1,
   borderColor: 'white',
   padding: 12,
   position: 'absolute',
   alignSelf: 'flex-end',
-  right: '5%'
+  right: '3%',
+  opacity: 0.8
 },
 });
