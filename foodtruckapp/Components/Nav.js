@@ -12,13 +12,13 @@ const Nav = ({ navigation, currentScreen }) => {
                     style={[styles.navButton, isTablet && styles.haha]}
                     onPress={() => navigation.navigate('MapScreen')}
                 >
-                    <Ionicons style={styles.button} name="map" size={40} color={currentScreen === 'MapScreen' ? "black" : "black"} />
+                    <Ionicons style={styles.button} name="map" size={40} color={currentScreen === 'MapScreen' ? "white" : "white"} />
                 </TouchableOpacity>
                 <TouchableOpacity 
                     style={[styles.navButton, isTablet && styles.haha]}
                     onPress={() => navigation.navigate('ListScreen')}
                 >
-                    <Ionicons style={styles.button} name="list" size={40} color={currentScreen === 'ListScreen' ? "black" : "black"} />
+                    <Ionicons style={styles.button} name="list" size={40} color={currentScreen === 'ListScreen' ? "white" : "white"} />
                 </TouchableOpacity>
             </View>
         );
@@ -28,12 +28,16 @@ const Nav = ({ navigation, currentScreen }) => {
 const styles = StyleSheet.create({
     navContainer: {
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: 'transparent', // Change to #13294B for blue nav bar
+        backgroundColor: '#000',
         paddingVertical: 6,
         paddingHorizontal: 10,
         width: '100%',
+        alignSelf: 'center',
+        borderTopColor: 'white',
+        borderTopWidth: 1,
+        
         
     },
     navContainerMap: {
@@ -44,11 +48,13 @@ const styles = StyleSheet.create({
         top: '0%',
     },
     navButton: {
-        padding: 10,
-        marginHorizontal: 70,
+        padding: 8,
+        backgroundColor: 'black',
+        borderRadius: 50
+
     },
     button: {
-        bottom: '20%',
+
     },
     navContainerTablet: {
         flexDirection: 'row',
