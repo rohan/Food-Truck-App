@@ -2,19 +2,12 @@
 
 ## Changes 
 
-### MapView 
-* Color theme 
-* Markers should be trucks
-* onPress for markers
-* Location button style
-
 ### DescriptionView
-* Same color 
-* Logo instead of image, smaller
-* Overhaul of structure, components and information 
+* Logo instead of image, smaller (business side)
 
 ### Functionality 
-* Pulling data from every user 
+* Pulling data from every user
+* Refactor main screens into a TabView
 
 ### Other stuff
 * Optimization 
