@@ -5,6 +5,8 @@ import Nav from './Nav';
 import Header from './Header';
 import { db } from './Config';
 import { ref, get, child } from 'firebase/database';
+import { Ionicons } from '@expo/vector-icons';
+
 import Geocoder from 'react-native-geocoding';
 
 export default function MapScreen({ navigation }) {  
@@ -12,166 +14,142 @@ export default function MapScreen({ navigation }) {
     const [screenJustFocused, setScreenJustFocused] = React.useState(true);
     const GEOCODER_API_KEY = "AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A"
     const mapStyle = [
-        {
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#242f3e',
-            },
-          ],
-        },
-        {
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#746855',
-            },
-          ],
-        },
-        {
-          elementType: 'labels.text.stroke',
-          stylers: [
-            {
-              color: '#242f3e',
-            },
-          ],
-        },
-        {
-          featureType: 'administrative.locality',
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#d59563',
-            },
-          ],
-        },
-        {
-          featureType: 'poi',
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#d59563',
-            },
-          ],
-        },
-        {
-          featureType: 'poi.park',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#263c3f',
-            },
-          ],
-        },
-        {
-          featureType: 'poi.park',
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#6b9a76',
-            },
-          ],
-        },
-        {
-          featureType: 'road',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#38414e',
-            },
-          ],
-        },
-        {
-          featureType: 'road',
-          elementType: 'geometry.stroke',
-          stylers: [
-            {
-              color: '#212a37',
-            },
-          ],
-        },
-        {
-          featureType: 'road',
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#9ca5b3',
-            },
-          ],
-        },
-        {
-          featureType: 'road.highway',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#746855',
-            },
-          ],
-        },
-        {
-          featureType: 'road.highway',
-          elementType: 'geometry.stroke',
-          stylers: [
-            {
-              color: '#1f2835',
-            },
-          ],
-        },
-        {
-          featureType: 'road.highway',
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#f3d19c',
-            },
-          ],
-        },
-        {
-          featureType: 'transit',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#2f3948',
-            },
-          ],
-        },
-        {
-          featureType: 'transit.station',
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#d59563',
-            },
-          ],
-        },
-        {
-          featureType: 'water',
-          elementType: 'geometry',
-          stylers: [
-            {
-              color: '#17263c',
-            },
-          ],
-        },
-        {
-          featureType: 'water',
-          elementType: 'labels.text.fill',
-          stylers: [
-            {
-              color: '#515c6d',
-            },
-          ],
-        },
-        {
-          featureType: 'water',
-          elementType: 'labels.text.stroke',
-          stylers: [
-            {
-              color: '#17263c',
-            },
-          ],
-        },
-      ];
+      {
+          "featureType": "all",
+          "elementType": "geometry",
+          "stylers": [
+              {
+                  "color": "#202c3e"
+              }
+          ]
+      },
+      {
+          "featureType": "all",
+          "elementType": "labels.text.fill",
+          "stylers": [
+              {
+                  "gamma": 0.01
+              },
+              {
+                  "lightness": 20
+              },
+              {
+                  "weight": "1.39"
+              },
+              {
+                  "color": "#ffffff"
+              }
+          ]
+      },
+      {
+          "featureType": "all",
+          "elementType": "labels.text.stroke",
+          "stylers": [
+              {
+                  "weight": "0.96"
+              },
+              {
+                  "saturation": "9"
+              },
+              {
+                  "visibility": "on"
+              },
+              {
+                  "color": "#000000"
+              }
+          ]
+      },
+      {
+          "featureType": "all",
+          "elementType": "labels.icon",
+          "stylers": [
+              {
+                  "visibility": "off"
+              }
+          ]
+      },
+      {
+          "featureType": "landscape",
+          "elementType": "geometry",
+          "stylers": [
+              {
+                  "lightness": 30
+              },
+              {
+                  "saturation": "9"
+              },
+              {
+                  "color": "#29446b"
+              }
+          ]
+      },
+      {
+          "featureType": "poi",
+          "elementType": "geometry",
+          "stylers": [
+              {
+                  "saturation": 20
+              }
+          ]
+      },
+      {
+          "featureType": "poi.park",
+          "elementType": "geometry",
+          "stylers": [
+              {
+                  "lightness": 20
+              },
+              {
+                  "saturation": -20
+              }
+          ]
+      },
+      {
+          "featureType": "road",
+          "elementType": "geometry",
+          "stylers": [
+              {
+                  "lightness": 10
+              },
+              {
+                  "saturation": -30
+              }
+          ]
+      },
+      {
+          "featureType": "road",
+          "elementType": "geometry.fill",
+          "stylers": [
+              {
+                  "color": "#193a55"
+              }
+          ]
+      },
+      {
+          "featureType": "road",
+          "elementType": "geometry.stroke",
+          "stylers": [
+              {
+                  "saturation": 25
+              },
+              {
+                  "lightness": 25
+              },
+              {
+                  "weight": "0.01"
+              }
+          ]
+      },
+      {
+          "featureType": "water",
+          "elementType": "all",
+          "stylers": [
+              {
+                  "lightness": -20
+              }
+          ]
+      }
+  ];
 
     const [truckData, setTruckData] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
@@ -192,13 +170,18 @@ export default function MapScreen({ navigation }) {
                   setTruckData([]);
                   Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
                   for (let i = 0; i < sortedTruckData.length; i++) {
-                    Geocoder.from(sortedTruckData[i].location)
-                    .then(json => {
-                      var location = json.results[0].geometry.location;
-                      sortedTruckData[i].coords = location;
-                      setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-                    })
-                    .catch(error => console.warn(error));
+                    const startDate = new Date(sortedTruckData[i].startTime);
+                    const endDate = new Date(sortedTruckData[i].endTime);
+                    const currentDate = new Date(Date.now());
+                    if (currentDate >= startDate && currentDate <= endDate) {
+                      Geocoder.from(sortedTruckData[i].location)
+                      .then(json => {
+                        var location = json.results[0].geometry.location;
+                        sortedTruckData[i].coords = location;
+                        setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                      })
+                      .catch(error => console.warn(error));
+                    }
                   }
               } else {
                   console.log("No data available");
@@ -224,7 +207,9 @@ export default function MapScreen({ navigation }) {
             identifier={truck.key}
             key={truck.key}
             onPress={() => navigation.navigate("Description", {truck: truck})}
-          />
+          >
+            <Image source={require('../assets/truck_marker.png')} style={{width: 35, height: 55}} />
+          </Marker>
         )
       }
     }
@@ -268,40 +253,6 @@ export default function MapScreen({ navigation }) {
     const [currentUserLocation, setCurrentUserLocation] = React.useState();
     return (
     <View style={styles.container}>
-       <Header currentScreen="MapScreen"         
-          handleNav={() => {navigation.navigate('ListScreen')}}
-          handleRefresh={() => {
-          setTimeout(() => {
-            const dbRef = ref(db);
-            get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const data = snapshot.val();
-                    const trucks = Object.keys(data).map(key => ({
-                        ...data[key]
-                    }))
-                    const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
-                    setTruckData([]);
-                    Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
-                    for (let i = 0; i < sortedTruckData.length; i++) {
-                      Geocoder.from(sortedTruckData[i].location)
-                      .then(json => {
-                        var location = json.results[0].geometry.location;
-                        sortedTruckData[i].coords = location;
-                        setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-                      })
-                      .catch(error => console.warn(error));
-                    }
-                } else {
-                    console.log("No data available");
-                }
-            }).catch((error) => {
-                console.error(error);
-            });
-            
-            setLoading(false);
-          }, 1000);  
-        }}
-        />
         <MapView 
             style={styles.map}
             customMapStyle={mapStyle}
@@ -316,17 +267,16 @@ export default function MapScreen({ navigation }) {
         >
            {mapMarkers()}
         </MapView>
+        <Header currentScreen="MapScreen"         
+          handleNav={() => {navigation.navigate('ListScreen')}}
+        />
         <TouchableOpacity
           style={styles.locationFocus}
           onPress={() => {
             _animateToUserPosition(currentUserLocation);
           }}
         >
-          <Image
-            source={require('../assets/newtarget.png')}
-            style={{ width: '100%', height: '100%' }}
-            resizeMode={'contain'}
-          />
+          <Ionicons name="locate-outline" size={30}/>
         </TouchableOpacity>
     </View>
     );
@@ -340,7 +290,8 @@ const styles = StyleSheet.create({
   },
   map: {
     width: '100%',
-    height: '87.9%',
+    height: '100%',
+    position: 'absolute'
   },
   paragraph: {
     margin: 24,
@@ -363,6 +314,8 @@ descriptionButtonText: {
 },
 locationFocus: {
   backgroundColor: '#d4d4d4',
+  alignItems: 'center',
+  justifyContent: 'center',
   width: 40,
   height: 50,
   marginHorizontal: '2%',
@@ -370,7 +323,6 @@ locationFocus: {
   borderRadius: 40,
   borderWidth: 1,
   borderColor: 'white',
-  padding: 12,
   position: 'absolute',
   alignSelf: 'flex-end',
   right: '3%',
