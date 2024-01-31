@@ -9,6 +9,13 @@
 * Pulling data from every user
 * Refactor main screens into a TabView
 
+### Web App (Back-end)
+* Business information needed to preload the web app with correct information
+* Remove name of food truck dropdown, replace "Data Management" header with name of Food Truck
+
 ### Other stuff
 * Optimization 
-* Analytics 
+* Analytics
+* Refactor Code (Remove unused code, organize, etc.)
+* * We need the business information for which food trucks we are working with so their data can be pre-loaded into the app
+
