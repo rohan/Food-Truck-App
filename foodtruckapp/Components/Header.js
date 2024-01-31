@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import { useFonts } from 'expo-font';
 import Foundation from 'react-native-vector-icons/Foundation';
 import { Ionicons } from '@expo/vector-icons';
 
-const Header = ({ currentScreen, handleRefresh, handleNav }) => {
+const Header = ({ currentScreen, handleRefresh, handleNav, navigation }) => {
     const [loaded] = useFonts({
         Lato: require('../assets/fonts/Lato-Regular.ttf'),
         QuickSand: require('../assets/fonts/Quicksand-Regular.ttf'),
@@ -12,6 +12,8 @@ const Header = ({ currentScreen, handleRefresh, handleNav }) => {
         QuickSandMedium: require('../assets/fonts/Quicksand-Medium.ttf'),
         QuickSandSemiBold: require('../assets/fonts/Quicksand-SemiBold.ttf'),
         PlayfairDisplay: require("../assets/fonts/PlayfairDisplay-VariableFont_wght.ttf"),
+        UberMove: require('../assets/fonts/UberMoveMedium.otf'),
+        UberMoveBold: require('../assets/fonts/UberMoveBold.otf')
       });
       if(!loaded) {
         return null;
@@ -19,12 +21,13 @@ const Header = ({ currentScreen, handleRefresh, handleNav }) => {
 
     return (
         <View style={styles.safeArea}>
-            <TouchableOpacity style={styles.navButton} onPress={handleNav}>
-                <Ionicons style={styles.button} name={currentScreen === "ListScreen" ? "map" : "list"} size={40} color="white"/>
+            <TouchableOpacity style={[styles.navButton, {borderBottomColor: currentScreen === "MapScreen" ? 'white' : '#c0c0c8'}]} onPress={handleNav} disabled={currentScreen == "MapScreen"}>
+                <Image source={require('../assets/mapscreenicon2.png')} style={styles.mapIcon}/>
+                <Text style={styles.buttonText}> Map </Text>
             </TouchableOpacity>
-            <Text style={styles.headerTitle}>Meals on Wheels</Text>
-            <TouchableOpacity style={styles.refreshButton} onPress={handleRefresh}>
-                <Foundation name="refresh" size={40} color="white"/>
+            <TouchableOpacity style={[styles.navButton, {borderBottomColor: currentScreen === "ListScreen" ? 'white' : '#c0c0c8'}]} onPress={handleNav} disabled={currentScreen == "ListScreen"}>
+            <Image source={require('../assets/browsetruckicon.png')} style={styles.browseIcon}/>
+                <Text style={styles.buttonText}> Browse </Text>
             </TouchableOpacity>
         </View>
     );
@@ -32,18 +35,18 @@ const Header = ({ currentScreen, handleRefresh, handleNav }) => {
 
 const styles = StyleSheet.create({
     safeArea: {
-        backgroundColor: '#000',
-        paddingVertical: 30,
+        backgroundColor: '#161629',
         justifyContent: 'center',
         width: '100%',
         alignItems: 'center',
         flexDirection: 'row',
-        borderBottomColor: 'white',
-        borderBottomWidth: 1,
+        position: 'absolute',
+        height: '12%',
+        bottom: '88%'
     },
     headerTitle: {
         fontSize: 24,
-        fontFamily: "PlayfairDisplay",
+        fontFamily: "UberMoveBold",
         fontWeight: 'bold',
         color: 'white',
         width: '65%',
@@ -51,7 +54,11 @@ const styles = StyleSheet.create({
         height: '100%',
         top: '5%',
     },
-
+    buttonText: {
+        fontFamily: 'UberMove',
+        color: 'white',
+        fontSize: 24,
+    },
     refreshButton: {
         color: '#BB86FC',
         width: '7%',
@@ -62,11 +69,24 @@ const styles = StyleSheet.create({
     },
     navButton: {
         color: '#BB86FC',
-        width: '7%',
+        width: '50%',
         justifyContent: 'center',
         alignSelf: 'center',
-        top: '3.5%',
-    }
+        flexDirection: 'row',
+        borderBottomWidth: 3,
+        height: '100%',
+        paddingTop: '15%'
+    },
+    mapIcon: {
+        resizeMode: 'contain',
+        width: '30%',
+        bottom: '85%'
+    },
+    browseIcon: {
+        resizeMode: 'contain',
+        width: '30%',
+        bottom: '111%'
+    },
 });
 
 export default Header;

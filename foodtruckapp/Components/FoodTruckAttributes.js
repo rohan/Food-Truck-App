@@ -2,13 +2,13 @@ const foodTruckAttributeMap = () => {
     return new Map([
         ["JGrill", 
         {
-            image: require("../assets/Food_trucks_Pitt_09.jpg"),
+            image: require("../assets/JG.png"),
             cuisineType: "Burgers & Fries",
             description: "Jurassic Grill Food Truck Description",
             websiteURL: "https://jurassicgrillchampaign.com/",
         }
         ],
-        ["Taco Bell", 
+        ["TBell", 
         {
             image: require("../assets/Food_trucks_Pitt_09.jpg"),
             cuisineType: "Mexican Fast Food",
@@ -16,7 +16,7 @@ const foodTruckAttributeMap = () => {
             websiteURL: "https://www.tacobell.com/",
         }
         ],
-        ["McDonald's", 
+        ["Dons", 
         {
             image: require("../assets/Food_trucks_Pitt_09.jpg"),
             cuisineType: "American Fast Food",

@@ -116,42 +116,7 @@ export default function ListScreen({ navigation }) {
         <Header 
         currentScreen={"ListScreen"}
         handleNav={() => {navigation.navigate('MapScreen')}}
-        handleRefresh={() => {
-                setTimeout(() => {
-                  const dbRef = ref(db);
-                  get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
-                      if (snapshot.exists()) {
-                          const data = snapshot.val();
-                          const trucks = Object.keys(data).map(key => ({
-                              ...data[key]
-                          }))
-                          const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
-                          setTruckData([]);
-                          Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
-                          for (let i = 0; i < sortedTruckData.length; i++) {
-                            const startDate = new Date(sortedTruckData[i].startTime);
-                            const endDate = new Date(sortedTruckData[i].endTime);
-                            const currentDate = new Date(Date.now());
-                            if (currentDate >= startDate && currentDate <= endDate) {
-                              Geocoder.from(sortedTruckData[i].location)
-                              .then(json => {
-                                var location = json.results[0].geometry.location;
-                                sortedTruckData[i].coords = location;
-                                setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-                              })
-                              .catch(error => console.warn(error));
-                            }
-                          }
-                      } else {
-                          console.log("No data available");
-                      }
-                  }).catch((error) => {
-                      console.error(error);
-                  });
-                  
-                  setLoading(false);
-                }, 1000);       
-        }}/>
+        />
       <View style={styles.searchBar}>
         <MaterialIcons style={styles.searchIcon} name="search" size={30} color="#000" />
         <TextInput 
@@ -248,7 +213,8 @@ const styles = StyleSheet.create({
     justifyContent: 'flex-start',
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'center'
+    alignSelf: 'center',
+    marginTop: '30%'
   },
   searchText: {
     fontSize: 20,

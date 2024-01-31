@@ -3,6 +3,7 @@ import ListScreen from './Components/ListScreen';
 import MapScreen from './Components/MapScreen';
 import Description from './Components/Description';
 import { NavigationContainer } from '@react-navigation/native';
+import MainScreen from './Components/MainScreen';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
@@ -14,21 +15,7 @@ function App() {
         initialRouteName="MapScreen"
         screenOptions={{
           headerShown: false,       // Hide the header globally
-          cardStyleInterpolator: CardStyleInterpolators.forFadeFromBottomAndroid, // Fade in effect
-          transitionSpec: {
-            open: {
-              animation: 'timing',
-              config: {
-                duration: 200 // Duration for opening
-              }
-            },
-            close: {
-              animation: 'timing',
-              config: {
-                duration: 200 // Duration for closing
-              }
-            }
-          }
+          animationEnabled: false,
         }}
       >
         <Stack.Screen 
