@@ -18,5 +18,5 @@
 * Optimization (app is very laggy as of right now)
 * Analytics
 * Refactor Code (Remove unused code, organize, etc.)
-* * We need the business information for which food trucks we are working with so their data can be pre-loaded into the app
+* We need the business information for which food trucks we are working with so their data can be pre-loaded into the app
 
