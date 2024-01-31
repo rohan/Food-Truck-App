@@ -4,6 +4,7 @@
 
 ### DescriptionView
 * Logo instead of image, smaller (business side)
+* Add more info to the "description" tab so it looks less empty
 
 ### Functionality 
 * Pulling data from every user
