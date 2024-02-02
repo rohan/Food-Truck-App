@@ -3,9 +3,7 @@
 ## Changes 
 
 ### BEFORE PUBLISHING
-* Add Splash Screen
 * Full date in description / browse screens
-* Pulling data from every user
 * Food Truck Attribute Map: fill out data for known food trucks
 * Web App: preload data with known food trucks
 * Web App: Remove name of food truck dropdown, replace "Data Management" header with name of Food Truck
