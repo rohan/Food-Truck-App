@@ -3,7 +3,6 @@
 ## Changes 
 
 ### BEFORE PUBLISHING
-* Full date in description / browse screens
 * Food Truck Attribute Map: fill out data for known food trucks
 * Web App: preload data with known food trucks
 
