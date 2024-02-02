@@ -6,7 +6,6 @@
 * Full date in description / browse screens
 * Food Truck Attribute Map: fill out data for known food trucks
 * Web App: preload data with known food trucks
-* Web App: Remove name of food truck dropdown, replace "Data Management" header with name of Food Truck
 
 ### AFTER PUBLISHING
 * Analytics
