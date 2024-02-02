@@ -3,10 +3,14 @@ import ListScreen from './Components/ListScreen';
 import MapScreen from './Components/MapScreen';
 import Description from './Components/Description';
 import { NavigationContainer } from '@react-navigation/native';
-import MainScreen from './Components/MainScreen';
 import { createStackNavigator, CardStyleInterpolators } from '@react-navigation/stack';
 
 const Stack = createStackNavigator();
+
+import * as SplashScreen from 'expo-splash-screen';
+
+SplashScreen.preventAutoHideAsync();
+setTimeout(SplashScreen.hideAsync, 5000);
 
 function App() {
   return (

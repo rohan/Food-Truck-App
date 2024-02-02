@@ -14,7 +14,8 @@ const windowWidth = Dimensions.get('window').width;
 const isTablet = windowWidth > 768; 
 
 export default function Description({ navigation, route }) {
-  const time = getTime(route.params.truck.startTime) + " to " + getTime(route.params.truck.endTime);
+  const startTime = getTime(route.params.truck.startTime) + " to ";
+  const endTime = getTime(route.params.truck.endTime);
   const foodtruckname= route.params.truck.name;
   const foodtype= foodTruckAttributeMap().get(foodtruckname).cuisineType;
   const websiteurl= foodTruckAttributeMap().get(foodtruckname).websiteURL;
@@ -22,14 +23,18 @@ export default function Description({ navigation, route }) {
   const foodtruckdescription = foodTruckAttributeMap().get(foodtruckname).description;
 
   function getTime(date) {
+    let timeStr = "";
+    timeStr += date.split("T")[0] + ", ";
     const time =  date.split("T")[1];
     const hours = time.split(":")[0];
     const minutes = time.split(":")[1];
     if (hours > 12) {
-      return (hours % 12) + ":" + minutes + "PM";
-     } else {
-      return time + "AM";
-     }
+      timeStr += (hours % 12) + ":" + minutes + "PM";
+    } else {
+      timeStr += time + "AM";
+    }
+
+    return timeStr;
   }
 
   const openDirections = () => {
@@ -295,7 +300,9 @@ const renderScene = SceneMap({
           <Text style={styles.foodTruckName}>
             {foodtruckname}
           </Text>
-          <Text style={styles.timeText}>{time}</Text>
+          <Text style={styles.timeText}>{startTime}</Text>
+          <Text style={styles.timeText}>{endTime}</Text>
+
           <Text style={styles.foodTypeText}>{foodtype}</Text>
         </View>
       </View>

@@ -20,37 +20,37 @@ export default function ListScreen({ navigation }) {
       // Call any action
       setTimeout(() => {
         const dbRef = ref(db);
-        get(child(dbRef, `users/82LyYqZ73TZ2XUZizHj9piktknm1/data`)).then((snapshot) => {
-        // get(child(dbRef, `users/`)).then((snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.val();
-            const trucks = Object.keys(data).map(key => ({
-                ...data[key]
-            }))
-            const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
-            setTruckData([]);
-            Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
-            for (let i = 0; i < sortedTruckData.length; i++) {
-              const startDate = new Date(sortedTruckData[i].startTime);
-              const endDate = new Date(sortedTruckData[i].endTime);
-              const currentDate = new Date(Date.now());
-              if (currentDate >= startDate && currentDate <= endDate) {
-                Geocoder.from(sortedTruckData[i].location)
-                .then(json => {
-                  var location = json.results[0].geometry.location;
-                  sortedTruckData[i].coords = location;
-                  setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
-                })
-                .catch(error => console.warn(error));
+        get(child(dbRef, `users`)).then((dataSnapshot) => {
+          if (dataSnapshot.exists()) {
+            const users = Object.keys(dataSnapshot.val());
+            for (var j = 0; j < users.length; j++) {
+              const data = dataSnapshot.val()[users[j]]["data"];
+              console.log(data);
+              const trucks = Object.keys(data).map(key => ({
+                  ...data[key]
+              }))
+              const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+              setTruckData([]);
+              Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
+              for (let i = 0; i < sortedTruckData.length; i++) {
+                const startDate = new Date(sortedTruckData[i].startTime);
+                const endDate = new Date(sortedTruckData[i].endTime);
+                const currentDate = new Date(Date.now());
+                if (currentDate >= startDate && currentDate <= endDate) {
+                  Geocoder.from(sortedTruckData[i].location)
+                  .then(json => {
+                    var location = json.results[0].geometry.location;
+                    sortedTruckData[i].coords = location;
+                    setTruckData((prevData) => [...prevData, sortedTruckData[i]]);
+                  })
+                  .catch(error => console.warn(error));
+                }               
               }
             }
-        } else {
-            console.log("No data available");
-        }
-        }).catch((error) => {
-            console.error(error);
+          }
         });
-        setLoading(true);
+        
+        setLoading(false);
       }, 1000);     
     });
 
@@ -71,14 +71,18 @@ export default function ListScreen({ navigation }) {
     }
 
     function getTime(date) {
+      let timeStr = "";
+      timeStr += date.split("T")[0] + ", ";
       const time =  date.split("T")[1];
       const hours = time.split(":")[0];
       const minutes = time.split(":")[1];
       if (hours > 12) {
-        return (hours % 12) + ":" + minutes + "PM";
-       } else {
-        return time + "AM";
-       }
+        timeStr += (hours % 12) + ":" + minutes + "PM";
+      } else {
+        timeStr += time + "AM";
+      }
+
+      return timeStr;
     }
 
     return (
@@ -87,7 +91,6 @@ export default function ListScreen({ navigation }) {
         <View style={styles.itemContent}>
           <Text style={styles.itemText}>{item.name}</Text>
           <Text style={styles.locationText}>{item.location}</Text>
-          <Text style={styles.timeText}>{getDate()}</Text>
           <Text style={styles.timeText}>{getTime(item.startTime)} to {getTime(item.endTime)}</Text>
         </View>
         <Ionicons name="arrow-forward" size={20} color="white" />
