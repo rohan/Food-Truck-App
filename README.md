@@ -2,21 +2,16 @@
 
 ## Changes 
 
-### DescriptionView
-* Logo instead of image, smaller (business side)
-* Add more info to the "description" tab so it looks less empty
-
-### Functionality 
+### BEFORE PUBLISHING
+* Add Splash Screen
+* Full date in description / browse screens
 * Pulling data from every user
-* Refactor main screens into a TabView
+* Food Truck Attribute Map: fill out data for known food trucks
+* Web App: preload data with known food trucks
+* Web App: Remove name of food truck dropdown, replace "Data Management" header with name of Food Truck
 
-### Web App (Back-end)
-* Business information needed to preload the web app with correct information
-* Remove name of food truck dropdown, replace "Data Management" header with name of Food Truck
-
-### Other stuff
-* Optimization (app is very laggy as of right now)
+### AFTER PUBLISHING
 * Analytics
 * Refactor Code (Remove unused code, organize, etc.)
-* We need the business information for which food trucks we are working with so their data can be pre-loaded into the app
-
+* Add more info to the "description" tab so it looks empty
+* Optimization (app is very laggy as of right now)
