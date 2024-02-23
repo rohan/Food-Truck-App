@@ -4,7 +4,7 @@ const foodTruckAttributeMap = () => {
         {
             image: require("../assets/JG.png"),
             cuisineType: "Burgers & Fries",
-            description: "Jurassic Grill Food Truck Description",
+            description: "Welcome to Jurassic Grill Champaign, your ultimate destination for burger bliss in the heart of the city! Step into a world where flavor reigns supreme and every bite is a journey through time. Whether you're dining with friends, family, or embarking on a solo burger quest, Jurassic Grill Champaign promises an unforgettable experience that's as big on flavor as it is on fun. So come hungry and get ready to taste the past in every bite!",
             websiteURL: "https://jurassicgrillchampaign.com/",
         }
         ],
