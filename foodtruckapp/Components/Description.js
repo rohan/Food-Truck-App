@@ -229,13 +229,9 @@ export default function Description({ navigation, route }) {
     <View style={{ flex: 1, backgroundColor: "#000" }}>
       <View style={styles.aboutUsContainer}>
         <Text style={styles.aboutUsHeader}>About Us</Text>
-
-        <Text style={styles.aboutUsText}>
-          Indulge in the savory delights of the Rolling Bistro, a gourmet food
-          truck specializing in a fusion of classic American and exotic
-          Mediterranean flavors.
-        </Text>
-      </View>
+        
+        <Text style={styles.aboutUsText}>{foodtruckdescription}</Text>
+      </View> 
 
       <View style={styles.contactContainer}>
         <Text style={styles.contactHeader}>Contact</Text>
