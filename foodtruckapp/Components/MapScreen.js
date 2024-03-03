@@ -165,7 +165,6 @@ export default function MapScreen({ navigation }) {
               const users = Object.keys(dataSnapshot.val());
               for (var j = 0; j < users.length; j++) {
                 const data = dataSnapshot.val()[users[j]]["data"];
-                console.log(data);
                 const trucks = Object.keys(data).map(key => ({
                     ...data[key]
                 }))
@@ -263,12 +262,12 @@ export default function MapScreen({ navigation }) {
             zoomEnabled={true}
             scrollEnabled={true}
             ref={_mapView}
-            onUserLocationChange={(pos) => setCurrentUserLocation(pos.nativeEvent.coordinate)}
+            onUserLocationChange={(pos) => {setCurrentUserLocation(pos.nativeEvent.coordinate)}}
         >
            {mapMarkers()}
         </MapView>
         <Header currentScreen="MapScreen"         
-          handleNav={() => {navigation.navigate('ListScreen')}}
+          handleNav={() => {navigation.navigate('ListScreen', {currentUserLocation: currentUserLocation})}}
         />
         <TouchableOpacity
           style={styles.locationFocus}

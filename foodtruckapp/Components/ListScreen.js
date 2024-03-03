@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image, TextInput, SafeAreaView } from 'react-native';
+import { Text, StyleSheet, FlatList, View, TouchableOpacity, Image, TextInput, SafeAreaView, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Nav from './Nav';
 import Header from './Header';
@@ -8,13 +8,16 @@ import { db } from './Config';
 import { ref, get, child } from 'firebase/database';
 import Geocoder from 'react-native-geocoding';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { getDistance } from 'geolib';
 
-export default function ListScreen({ navigation }) {
+export default function ListScreen({ navigation, route }) {
 
   const [truckData, setTruckData] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const [sortOption, setSortOption] = React.useState("name");
 
   React.useEffect(() => {
+    console.log(route.params.currentUserLocation);
     const unsubscribe = navigation.addListener('focus', () => {
       // The screen is focused
       // Call any action
@@ -25,11 +28,10 @@ export default function ListScreen({ navigation }) {
             const users = Object.keys(dataSnapshot.val());
             for (var j = 0; j < users.length; j++) {
               const data = dataSnapshot.val()[users[j]]["data"];
-              console.log(data);
               const trucks = Object.keys(data).map(key => ({
                   ...data[key]
               }))
-              const sortedTruckData = trucks.sort((a, b) => a.name.localeCompare(b.name));
+              const sortedTruckData = trucks.sort((a, b) => {return a.name.localeCompare(b.name)});
               setTruckData([]);
               Geocoder.init("AIzaSyBzBg_8V451VUSWuujZtTcn03gHJBok97A");
               for (let i = 0; i < sortedTruckData.length; i++) {
@@ -49,7 +51,7 @@ export default function ListScreen({ navigation }) {
             }
           }
         });
-        
+        sort("name");
         setLoading(false);
       }, 1000);     
     });
@@ -65,7 +67,6 @@ export default function ListScreen({ navigation }) {
   ])
 
   function Item({ item }) {
-
     function getDate() {
       return item.startTime.split("T")[0];
     }
@@ -102,6 +103,34 @@ export default function ListScreen({ navigation }) {
     <Item item={item} />
   );
 
+  function sort(sortOptionSelected) {
+    switch (sortOptionSelected) {
+      case "name":
+        const temp = truckData;
+        temp.sort((a, b) => {return a.name.localeCompare(b.name)});
+        setTruckData(temp);
+        break;
+      case "proximity":
+        // do something
+        const proximityTemp = truckData;
+        proximityTemp.sort((a, b) => {return getDistance(a.coords, {
+          latitude: route.params.currentUserLocation.latitude,
+          longitude: route.params.currentUserLocation.longitude
+        }) - getDistance(b.coords, {
+          latitude: route.params.currentUserLocation.latitude,
+          longitude: route.params.currentUserLocation.longitude
+        })});
+        //setTruckData(proximityTemp);
+        break;
+      case "closingTime":
+        const newTemp = truckData;
+        newTemp.sort((a, b) => {return new Date(b.endTime) - new Date(a.endTime)});
+        setTruckData(newTemp);
+        break;
+    }
+    setSortOption(sortOptionSelected);
+  };
+
   const [search, setSearch] = React.useState("");
   const [loaded] = useFonts({
     Lato: require('../assets/fonts/Lato-Regular.ttf'),
@@ -133,7 +162,25 @@ export default function ListScreen({ navigation }) {
           <MaterialIcons name="close" size={32} color="#000" />
         </TouchableOpacity>
       </View>
-      <FlatList
+      <ScrollView horizontal={true} contentContainerStyle={styles.sortScrollView} style={{height:'5%'}}> 
+        <Text style={styles.sortText}>Sort by:</Text>
+        <TouchableOpacity style={[styles.sortButton, {backgroundColor: 
+        (sortOption == "name" ? "gold" : "white")}]}
+                          onPress={() => {sort("name")}}>
+          <Text style={styles.sortOptionsText}>Name</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.sortButton, {backgroundColor: 
+        (sortOption == "proximity" ? "gold" : "white")}]}
+                                onPress={() => {sort("proximity")}}>
+          <Text style={styles.sortOptionsText}>Proximity</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.sortButton, {backgroundColor: 
+        (sortOption == "closingTime" ? "gold" : "white")}]}
+                                onPress={() => {sort("closingTime")}}>
+          <Text style={styles.sortOptionsText}>Closing Time</Text>
+        </TouchableOpacity>
+      </ScrollView>
+      <FlatList style={{marginTop:'2%'}}
         data={truckData.filter((item) => item.name.toLowerCase().includes(search.toLowerCase()))}
         renderItem={renderItem}
         keyExtractor={(item) => item.key}
@@ -169,8 +216,6 @@ const styles = StyleSheet.create({
     marginVertical: 6, // Half of 12 units for spacing between items
     borderRadius: 20, // Rounded corners
     alignSelf: 'center', // Ensure each item is centered horizontally
-
-
   },
   itemText: {
     flex: 1,
@@ -227,6 +272,32 @@ const styles = StyleSheet.create({
   },
   searchIcon: {
     width: '10%'
+  }, 
+  sortScrollView: {
+    alignItems: 'center',
+    alignSelf: 'center',
+    justifyContent: 'space-around',
+    width:'115%',
+    height:'100%',
+  },
+  sortText: {
+    fontFamily: 'QuickSandSemiBold',
+    color: 'white'
+  }, 
+  sortButton: {
+    height: '100%',
+    backgroundColor: 'white',
+    borderBottomColor: 'black',
+    borderRadius: 55,
+    width: '25%',
+    alignItems: 'center',
+  },
+  sortOptionsText: {
+    width: '100%',
+    textAlign: 'center',
+    fontSize: 13,
+    fontFamily: 'QuickSandMedium',
+    top: '15%', 
   }
 });
 
